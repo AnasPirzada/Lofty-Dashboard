@@ -5,7 +5,7 @@ const AssigneeSelector = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const leadAssignee = {
-    name: 'Kari Kohler',
+    name: 'Squashed',
     role: 'Agent',
     image:
       'https://images.unsplash.com/photo-1440589473619-3cde28941638?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -14,19 +14,19 @@ const AssigneeSelector = () => {
 
   const agents = [
     {
-      name: 'Denver Website',
+      name: 'Gargantuan',
       image:
         'https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       selected: false,
     },
     {
-      name: 'Doug Sutton',
+      name: 'Sutton',
       image:
         'https://images.unsplash.com/photo-1492447166138-50c3889fccb1?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       selected: false,
     },
     {
-      name: 'Gabriela Cortez',
+      name: 'Jumpy',
       image:
         'https://plus.unsplash.com/premium_photo-1682096343183-33dc522090ca?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       selected: false,

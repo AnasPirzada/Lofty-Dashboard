@@ -1,5 +1,3 @@
-// src/components/NavBar.js
-
 import {
   BellIcon,
   ChatIcon,
@@ -22,7 +20,7 @@ const NavBar = () => {
   const navItems = [
     { name: 'People', dropdown: true },
     { name: 'Transactions', dropdown: false },
-    { name: 'Calendars', dropdown: false },
+    { name: 'Calendars', dropdown: false, path: '/Calendars' },
     { name: 'Listings', dropdown: false, path: '/listings' }, // Add path for Listings
     { name: 'Marketing', dropdown: false },
     { name: 'Reporting', dropdown: false },
@@ -33,8 +31,8 @@ const NavBar = () => {
 
   // Set active item based on current route
   useEffect(() => {
-    if (location.pathname === '/listings') {
-      setActiveItem('Listings');
+    if (location.pathname === '/listings' || '/Calendars') {
+      setActiveItem('Listings' && 'Calendars');
     } else {
       setActiveItem(''); // Reset for non-routed pages
     }
@@ -158,7 +156,7 @@ const NavBar = () => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className='md:hidden absolute top-16 left-0 w-full bg-white shadow-lg'
+          className='md:hidden absolute z-50 top-16 left-0 w-full bg-white shadow-lg'
         >
           <ul className='flex flex-col items-start p-4'>
             {navItems.map(item => (

@@ -225,14 +225,14 @@ const TransactionForm = ({ closeModal }) => {
       </div>
 
       {/* Action Buttons */}
-      <div className='flex justify-between items-center mt-4'>
-        <button className='first border rounded-lg border-gray-400 flex justify-start items-center py-2 px-2'>
+      <div className='grid grid-cols-1 md:grid-cols-2 justify-between items-center mt-4 gap-4'>
+        <button className='border rounded-lg border-gray-400 flex justify-start items-center py-2 px-2'>
           <img src='/setting.svg' className='w-3 h-3 me-3' alt='' />
           Details View
         </button>
-        <div>
+        <div className='flex justify-end'>
           <button
-            className='px-4 py-2 text-gray-600 rounded-lg bg-gray-200  mr-2'
+            className='px-4 py-2 text-gray-600 rounded-lg bg-gray-200 mr-2'
             onClick={closeModal}
           >
             Cancel
