@@ -39,7 +39,7 @@ export const SideSection = ({ setSelectedOption, selectedOption }) => {
   }, []);
 
   return (
-    <div className='w-full md:w-80 h-[120vh] bg-white p-4 shadow-lg mt-1'>
+    <div className='w-full md:w-80 h-auto md:h-[120vh] bg-white p-4 shadow-lg mt-1'>
       {/* Header and Address Sections */}
       <div className='flex items-center justify-between mb-4'>
         <span className='bg-blue-100 text-blue-700 px-2 py-1 text-xs rounded-md'>
@@ -55,7 +55,7 @@ export const SideSection = ({ setSelectedOption, selectedOption }) => {
         <p className='first text-sm font-normal'>
           Transaction Owner{' '}
           <span className='text-gray-400 font-normal text-sm'>
-            Kari Kholer (Agent)
+            Sunny (Agent)
           </span>
         </p>
         <img

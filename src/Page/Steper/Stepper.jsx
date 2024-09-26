@@ -117,11 +117,11 @@ const Stepper = ({ selectedOption }) => {
       )}
 
       <div className='wrapper flex flex-col md:flex-row border items-center mt-2 bg-[#FFFFFF] py-6 ps-2 ms-2'>
-        <div className='arrow-steps clearfix'>
+        <div className='arrow-steps  clearfix'>
           {stepName.map((step, index) => (
             <div
               key={index}
-              className={`step ${currentStep === index ? 'current' : ''} ${
+              className={`step  ${currentStep === index ? 'current' : ''} ${
                 stepsCompletion[index] ? 'done' : ''
               }`} // Apply 'done' class based on global completion state
               onClick={() => handleStepClick(index)} // Open modal for confirmation on click
@@ -155,7 +155,7 @@ const Stepper = ({ selectedOption }) => {
         </div>
       </div>
 
-      <div className='mt-3 border bg-[#FFFFFF] h-screen overflow-y-auto ms-2'>
+      <div className='mt-3 border bg-[#FFFFFF]  h-screen overflow-y-auto ms-2'>
         {renderStepContent()}
       </div>
     </div>

@@ -23,7 +23,7 @@ const LoginSignUpScreen = () => {
   return (
     <div className='flex items-center justify-center min-h-screen bg-[#3951BA]'>
       <motion.div
-        className='bg-white rounded-lg shadow-lg p-8 max-w-sm w-full'
+        className='bg-white rounded-lg shadow-lg mx-2 md:mx-0 p-8 max-w-sm w-full'
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
@@ -34,7 +34,7 @@ const LoginSignUpScreen = () => {
 
         <form onSubmit={handleSubmit}>
           {!isLogin && (
-            <div className='mb-4'>
+            <div className='mb-4 '>
               <label className='block text-gray-700 mb-2' htmlFor='username'>
                 Username
               </label>

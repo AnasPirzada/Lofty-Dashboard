@@ -342,7 +342,7 @@ const TableWithToolbar = () => {
                 <motion.tr
                   key={index}
                   whileHover={{ scale: 1.02 }}
-                  className='border-b hover:bg-gray-50'
+                  className='border-b text-nowrap hover:bg-gray-50'
                 >
                   <td className='px-4 py-2 text-gray-600'>
                     {row.transactionName}

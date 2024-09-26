@@ -56,8 +56,10 @@ const Sidebar = ({
       <div
         // className='w-64 bg-gray-900 text-gray-300 h-screen p-4'
         className={` bg-gray-900 text-gray-300 p-4 z-40 transition-transform duration-300 ${
-          isOpen ? 'translate-x-0 fixed top-0 left-0 ' : '-translate-x-full h-0'
-        } md:translate-x-0 md:w-64`}
+          isOpen
+            ? 'translate-x-0 fixed top-0 left-0 '
+            : '-translate-x-full h-0 md:h-full'
+        } md:translate-x-0 md:w-100`}
       >
         {sidebarItems.map((section, sectionIndex) => (
           <div key={sectionIndex}>
