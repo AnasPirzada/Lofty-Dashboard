@@ -318,20 +318,22 @@ const TableWithToolbar = () => {
             <thead>
               <tr className='bg-white text-nowrap'>
                 <th className='px-4 py-2 text-left text-gray-700'>
-                  Transaction Name
+                  Property Address{' '}
                 </th>
-                <th className='px-4 py-2 text-left text-gray-700'>Lead</th>
                 <th className='px-4 py-2 text-left text-gray-700'>
-                  Transaction Owner
+                  Client Name
                 </th>
+                {/* <th className='px-4 py-2 text-left text-gray-700'>
+                  Transaction Owner
+                </th> */}
                 <th className='px-4 py-2 text-left text-gray-700'>Tasks</th>
                 <th className='px-4 py-2 text-left text-gray-700'>Stage</th>
                 <th className='px-4 py-2 text-left text-gray-700'>
                   Expected Close
                 </th>
-                <th className='px-4 py-2 text-left text-gray-700'>
+                {/* <th className='px-4 py-2 text-left text-gray-700'>
                   Closed Date
-                </th>
+                </th> */}
                 <th className='px-4 py-2 text-left text-gray-700'>
                   Sales Price
                 </th>
@@ -348,9 +350,9 @@ const TableWithToolbar = () => {
                     {row.transactionName}
                   </td>
                   <td className='px-4 py-2 text-gray-600'>{row.lead}</td>
-                  <td className='px-4 py-2 text-gray-600'>
+                  {/* <td className='px-4 py-2 text-gray-600'>
                     {row.transactionOwner}
-                  </td>
+                  </td> */}
                   <td className='px-4 py-2 text-gray-600 flex items-center justify-start'>
                     <img
                       src='/loader-alt-svgrepo-com.svg'
@@ -389,7 +391,7 @@ const TableWithToolbar = () => {
                     />
                   </td>
 
-                  <td className='px-4 py-2 text-gray-600'>{row.closedDate}</td>
+                  {/* <td className='px-4 py-2 text-gray-600'>{row.closedDate}</td> */}
                   <td className='px-4 py-2 text-gray-600'>{row.salesPrice}</td>
                 </motion.tr>
               ))}

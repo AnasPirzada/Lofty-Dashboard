@@ -1,9 +1,6 @@
 import {
-  BellIcon,
   ChatIcon,
   MenuIcon,
-  QuestionMarkCircleIcon,
-  SearchIcon,
   UserCircleIcon,
   XIcon,
 } from '@heroicons/react/outline';
@@ -18,21 +15,25 @@ const NavBar = () => {
   const [activeItem, setActiveItem] = useState('');
 
   const navItems = [
-    { name: 'People', dropdown: true },
+    // { name: 'People', dropdown: true },
     { name: 'Transactions', dropdown: false },
-    { name: 'Calendars', dropdown: false, path: '/Calendars' },
-    { name: 'Listings', dropdown: false, path: '/listings' }, // Add path for Listings
+    { name: 'Listings', dropdown: false, path: '/listings' },
+    { name: 'Calendars', dropdown: false, path: '/calendars' },
     { name: 'Marketing', dropdown: false },
-    { name: 'Reporting', dropdown: false },
-    { name: 'Website', dropdown: false },
-    { name: 'Marketplace', dropdown: false },
+    // { name: 'Reporting', dropdown: false },
+    // { name: 'Website', dropdown: false },
+    // { name: 'Marketplace', dropdown: false },
     { name: 'Settings', dropdown: false },
   ];
 
   // Set active item based on current route
   useEffect(() => {
-    if (location.pathname === '/listings' || '/Calendars') {
-      setActiveItem('Listings' && 'Calendars');
+    const currentPath = location.pathname;
+
+    const matchedItem = navItems.find(item => item.path === currentPath);
+
+    if (matchedItem) {
+      setActiveItem(matchedItem.name);
     } else {
       setActiveItem(''); // Reset for non-routed pages
     }
@@ -132,10 +133,10 @@ const NavBar = () => {
 
       {/* Right Section - Icons */}
       <div className='flex items-center space-x-4'>
-        <SearchIcon className='w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer' />
+        {/* <SearchIcon className='w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer' /> */}
         <ChatIcon className='w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer' />
-        <BellIcon className='w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer' />
-        <QuestionMarkCircleIcon className='w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer' />
+        {/* <BellIcon className='w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer' />
+        <QuestionMarkCircleIcon className='w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer' /> */}
         <UserCircleIcon className='w-8 h-8 text-gray-500 hover:text-gray-700 cursor-pointer' />
 
         {/* Hamburger Icon for Mobile */}

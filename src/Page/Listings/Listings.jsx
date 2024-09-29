@@ -10,7 +10,7 @@ import Table from './Table.jsx';
 const Listings = () => {
   const [activeTab, setActiveTab] = useState('Listing'); // Set Listing as the initial active tab
 
-  const tabs = ['All', 'Purchase', 'Listing', 'Lease', 'Other']; // Tab items
+  const tabs = ['All', 'Purchase', 'Listing', 'Lease', 'Referals', 'Other']; // Tab items
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -26,6 +26,8 @@ const Listings = () => {
         );
       case 'Lease':
         return <div>Content for Lease</div>;
+      case 'Referals':
+        return <div>Content for Referals</div>;
       case 'Other':
         return <div>Content for Other</div>;
       default:

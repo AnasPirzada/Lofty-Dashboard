@@ -14,18 +14,18 @@ const sidebarItems = [
       'Finished',
     ],
   },
-  {
-    title: 'Team Tasks',
-    subItems: [
-      'All Tasks',
-      'Scheduled',
-      'Today',
-      'This Week',
-      'This Month',
-      'Overdue',
-      'Finished',
-    ],
-  },
+  // {
+  //   title: 'Team Tasks',
+  //   subItems: [
+  //     'All Tasks',
+  //     'Scheduled',
+  //     'Today',
+  //     'This Week',
+  //     'This Month',
+  //     'Overdue',
+  //     'Finished',
+  //   ],
+  // },
 ];
 
 const Sidebar = ({

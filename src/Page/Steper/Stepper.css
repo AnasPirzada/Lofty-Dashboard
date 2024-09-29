@@ -90,11 +90,11 @@ a:hover {
 
 .arrow-steps .step.current {
   color: #fff;
-  background-color: #23468c;
+  background-color: #3951BA;
 }
 
 .arrow-steps .step.current:after {
-  border-left: 17px solid #23468c;
+  border-left: 17px solid #3951BA;
 }
 
 

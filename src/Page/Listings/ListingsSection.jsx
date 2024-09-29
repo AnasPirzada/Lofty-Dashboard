@@ -20,21 +20,21 @@ const data = [
     count: 6,
     amount: '$0',
   },
-  {
-    title: 'Pending',
-    count: 0,
-    amount: '$0',
-  },
+  // {
+  //   title: 'Pending',
+  //   count: 0,
+  //   amount: '$0',
+  // },
   {
     title: 'Closed',
     count: 0,
     amount: '$0',
   },
-  {
-    title: 'Cancelled',
-    count: 0,
-    amount: '$0',
-  },
+  // {
+  //   title: 'Cancelled',
+  //   count: 0,
+  //   amount: '$0',
+  // },
 ];
 
 const ListingsSection = () => {

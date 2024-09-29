@@ -14,16 +14,16 @@ const TopNav = () => {
     <div className='bg-[#F3F5F9]'>
       <div className='grid grid-cols-1 md:grid-cols-12 gap-4 py-3 px-5'>
         <div className='col-span-12 md:col-span-6'>
-          <div className='grid grid-cols-3 gap-2 bg-zinc-400 p-2 rounded-lg'>
+          <div className='grid grid-cols-2 gap-2 bg-zinc-400 p-2 rounded-lg'>
             <button className='col-span-1 font-semibold shadow-lg bg-white rounded-lg text-blue-600 p-2'>
               Calendar
             </button>
-            <button className='col-span-1 font-semibold bg-transparent text-white py-2 px-4'>
+            <button className='col-span-1 font-semibold bg-transparent text-white py-2 ps-4'>
               Task
             </button>
-            <button className='col-span-1 font-semibold py-2 px-4 text-white'>
+            {/* <button className='col-span-1 font-semibold py-2 px-4 text-white'>
               Showing
-            </button>
+            </button> */}
           </div>
         </div>
         <div className='col-span-12 md:col-span-2 md:col-start-11'>
@@ -33,7 +33,7 @@ const TopNav = () => {
         </div>
       </div>
 
-      <div className='flex flex-col md:flex-row ms-5 mt-5 border px-5 py-3 bg-white space-y-4 md:space-y-0 md:space-x-4'>
+      {/* <div className='flex flex-col md:flex-row ms-5 mt-5 border px-5 py-3 bg-white space-y-4 md:space-y-0 md:space-x-4'>
         <div className='relative inline-block w-full md:w-auto'>
           <button
             className='bg-transparent border-r p-2 rounded w-full md:w-auto'
@@ -80,7 +80,7 @@ const TopNav = () => {
             </ul>
           )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -136,7 +136,7 @@ const ChecklistsContent = ({ currentStep }) => {
                     <div className='flex items-center'>
                       <input
                         type='checkbox'
-                        className='form-checkbox h-5 w-5 text-blue-600'
+                        className='form-checkbox h-5 w-5 text-[#3951BA]'
                       />
                       <span className='ml-3 text-gray-800'>
                         {task.description}
@@ -168,7 +168,7 @@ const ChecklistsContent = ({ currentStep }) => {
               <button
                 className={`px-4 py-2 font-semibold ${
                   activeTab === 'preListing'
-                    ? 'border-b-2 border-blue-500 text-blue-500'
+                    ? 'border-b-2 border-[#3951BA] text-[#3951BA]'
                     : 'text-gray-500'
                 }`}
                 onClick={() => setActiveTab('preListing')}
@@ -180,7 +180,7 @@ const ChecklistsContent = ({ currentStep }) => {
               <button
                 className={`px-4 py-2 font-semibold ${
                   activeTab === 'activeListing'
-                    ? 'border-b-2 border-blue-500 text-blue-500'
+                    ? 'border-b-2 border-[#3951BA] text-[#3951BA]'
                     : 'text-gray-500'
                 }`}
                 onClick={() => setActiveTab('activeListing')}
@@ -207,7 +207,7 @@ const ChecklistsContent = ({ currentStep }) => {
               <button
                 className={`px-4 py-2 font-semibold ${
                   activeTab === 'preListing'
-                    ? 'border-b-2 border-blue-500 text-blue-500'
+                    ? 'border-b-2 border-[#3951BA] text-[#3951BA]'
                     : 'text-gray-500'
                 }`}
                 onClick={() => setActiveTab('preListing')}
@@ -219,7 +219,7 @@ const ChecklistsContent = ({ currentStep }) => {
               <button
                 className={`px-4 py-2 font-semibold text-nowrap ${
                   activeTab === 'activeListing'
-                    ? 'border-b-2 border-blue-500 text-blue-500'
+                    ? 'border-b-2 border-[#3951BA] text-[#3951BA]'
                     : 'text-gray-500'
                 }`}
                 onClick={() => setActiveTab('activeListing')}
@@ -231,7 +231,7 @@ const ChecklistsContent = ({ currentStep }) => {
               <button
                 className={`px-4 py-2 font-semibold text-nowrap ${
                   activeTab === 'UnderContract'
-                    ? 'border-b-2 border-blue-500  text-blue-500'
+                    ? 'border-b-2 border-[#3951BA]  text-[#3951BA]'
                     : 'text-gray-500'
                 }`}
                 onClick={() => setActiveTab('UnderContract')}

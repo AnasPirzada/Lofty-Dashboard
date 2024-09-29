@@ -22,11 +22,11 @@ export const PreListingContent = () => {
     },
     {
       transactionType: 'Transaction',
-      address: '321 Comedy Blvd, Denver, CO 80202',
+      address: '159 Chuckle Blvd, Phoenix, AZ 85001',
       taskDescription:
-        'Find a buyer who doesn’t mind living next to a loud chicken farm.',
-      assignedTo: 'AB',
-      dueDate: 'In 2 days',
+        'Replace the “Beware of Ghosts” sign with something less terrifying.',
+      assignedTo: 'LD',
+      dueDate: 'Today',
     },
     {
       transactionType: 'Transaction',
@@ -38,36 +38,31 @@ export const PreListingContent = () => {
     },
     {
       transactionType: 'Transaction',
-      address: '987 Pun Ln, Seattle, WA 98101',
-      taskDescription:
-        'Explain to the client that “rustic” doesn’t mean “falling apart.”',
-      assignedTo: 'RS',
-      dueDate: 'In 3 days',
-    },
-    {
-      transactionType: 'Transaction',
-      address: '741 LOL Dr, Austin, TX 73301',
-      taskDescription:
-        'Convince the neighbor’s dog to stop barking during house tours.',
-      assignedTo: 'MK',
-      dueDate: 'Next Week',
-    },
-    {
-      transactionType: 'Transaction',
-      address: '159 Chuckle Blvd, Phoenix, AZ 85001',
-      taskDescription:
-        'Replace the “Beware of Ghosts” sign with something less terrifying.',
-      assignedTo: 'LD',
-      dueDate: 'Today',
-    },
-    {
-      transactionType: 'Transaction',
       address: '753 Snicker Cir, Boston, MA 02116',
       taskDescription:
         'Organize a housewarming party for the squirrels in the backyard.',
       assignedTo: 'TJ',
       dueDate: 'Tomorrow',
     },
+    {
+      transactionType: 'Transaction',
+      address: '321 Comedy Blvd, Denver, CO 80202',
+      taskDescription:
+        'Find a buyer who doesn’t mind living next to a loud chicken farm.',
+      assignedTo: 'AB',
+      dueDate: 'In 2 days',
+    },
+    {
+      transactionType: 'Transaction',
+      address: '987 Pun Ln, Seattle, WA 98101',
+      taskDescription:
+        'Explain to the client that “rustic” doesn’t mean “falling apart.”',
+      assignedTo: 'RS',
+      dueDate: 'In 3 days',
+    },
+  
+    
+  
     {
       transactionType: 'Transaction',
       address: '369 Giggle St, Nashville, TN 37201',
@@ -83,6 +78,14 @@ export const PreListingContent = () => {
         'Confirm that the neighbor’s pet llama won’t be included in the sale.',
       assignedTo: 'NW',
       dueDate: 'In 5 days',
+    },
+    {
+      transactionType: 'Transaction',
+      address: '741 LOL Dr, Austin, TX 73301',
+      taskDescription:
+        'Convince the neighbor’s dog to stop barking during house tours.',
+      assignedTo: 'MK',
+      dueDate: 'Next Week',
     },
   ];
 
