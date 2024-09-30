@@ -44,7 +44,7 @@ const AssigneeSelector = () => {
       <input
         type='text'
         placeholder='Search'
-        className='w-full p-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300 text-xs sm:text-sm md:text-base'
+        className='w-full p-2 mb-4 border border-gray-300 rounded text-xs sm:text-sm md:text-base'
         value={searchTerm}
         onChange={e => setSearchTerm(e.target.value)}
       />
@@ -62,16 +62,16 @@ const AssigneeSelector = () => {
               className='w-6 h-6 md:w-8 md:h-8 rounded-full object-cover'
             />
 
-            <span className='text-blue-600 ml-2 text-xs sm:text-sm md:ml-4 font-medium'>
+            <span className='text-[#9094A5] ml-2 text-xs sm:text-sm md:ml-4 font-medium'>
               {leadAssignee.name}
             </span>
-            <span className='ml-1 md:ml-2 text-xs bg-blue-100 text-blue-600 px-1 py-0.5 rounded-full'>
+            <span className='ml-1 md:ml-2 text-xs bg-gray-100 text-[#9094A5] px-1 py-0.5 rounded-full'>
               {leadAssignee.role}
             </span>
           </div>
           {leadAssignee.selected && (
             <svg
-              className='w-4 h-4 md:w-5 md:h-5 text-blue-500'
+              className='w-4 h-4 md:w-5 md:h-5 text-gray-500'
               fill='none'
               stroke='currentColor'
               viewBox='0 0 24 24'

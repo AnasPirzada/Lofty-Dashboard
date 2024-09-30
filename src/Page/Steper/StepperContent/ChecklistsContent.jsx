@@ -12,13 +12,13 @@ const ChecklistsContent = ({ currentStep }) => {
     {
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do',
-      assignedInitials: 'ipsum dolor sit amet',
+      assignedInitials: 'ips',
       assignedName: 'ipsum dolor',
     },
     {
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do',
-      assignedInitials: 'ipsum dolor sit amet',
+      assignedInitials: 'it',
       assignedName: 'ipsum dolor',
     },
   ];
@@ -71,7 +71,7 @@ const ChecklistsContent = ({ currentStep }) => {
           {!checklistApplied ? (
             <>
               <div className='flex justify-end items-center'>
-                <button className='bg-[#3951BA] py-1 drop-shadow-lg flex mt-4 me-4 text-white px-6 rounded-lg'>
+                <button className='bg-[#9094A5] py-1 drop-shadow-lg flex mt-4 me-4 text-white px-6 rounded-lg'>
                   Action{' '}
                   <img src='/downwhite.svg' className='w-7 h-7 ms-4' alt='' />
                 </button>
@@ -89,7 +89,7 @@ const ChecklistsContent = ({ currentStep }) => {
               <div className='grid flex-col mt-10 justify-center items-center grid-cols-12'>
                 <div className='grid col-span-3'></div>
                 <div className='grid col-span-6'>
-                  <button className='bg-[#3951BA] text-white py-2 w-full rounded-lg'>
+                  <button className='bg-[#9094A5] text-white py-2 w-full rounded-lg'>
                     Add an individual Task
                   </button>
                 </div>
@@ -100,7 +100,7 @@ const ChecklistsContent = ({ currentStep }) => {
                 <div className='grid col-span-3'></div>
                 <div className='grid col-span-6'>
                   <button
-                    className='bg-[#3951BA] text-white py-2 w-full rounded-lg'
+                    className='bg-[#9094A5] text-white py-2 w-full rounded-lg'
                     onClick={() => setIsOpen(true)}
                   >
                     Apply a checklist Template
@@ -119,10 +119,10 @@ const ChecklistsContent = ({ currentStep }) => {
           ) : (
             <>
               <div className='flex justify-between items-center px-4  border-b'>
-                <h2 className='text-lg border-b-2 border-b-[#3951BA] pb-1 font-semibold text-gray-800'>
+                <h2 className='text-lg border-b-2 border-b-[#9094A5] pb-1 font-semibold text-gray-800'>
                   Pre-Listing
                 </h2>
-                <button className='bg-[#3951BA] py-1 drop-shadow-lg mb-2 flex mt-4 me-4 text-white px-6 rounded-lg'>
+                <button className='bg-[#9094A5] py-1 drop-shadow-lg mb-2 flex mt-4 me-4 text-white px-6 rounded-lg'>
                   Action{' '}
                   <img src='/downwhite.svg' className='w-7 h-7 ms-4' alt='' />
                 </button>
@@ -136,14 +136,14 @@ const ChecklistsContent = ({ currentStep }) => {
                     <div className='flex items-center'>
                       <input
                         type='checkbox'
-                        className='form-checkbox h-5 w-5 text-[#3951BA]'
+                        className='form-checkbox h-5 w-5 text-[#9094A5]'
                       />
                       <span className='ml-3 text-gray-800'>
                         {task.description}
                       </span>
                     </div>
                     <div className='flex items-center space-x-2'>
-                      <div className='bg-purple-500 text-white w-8 h-8 flex items-center justify-center rounded-full'>
+                      <div className='bg-[#9094A5] text-white w-8 h-8 flex items-center justify-center rounded-full'>
                         {task.assignedInitials}
                       </div>
                       <span className='text-gray-600'>{task.assignedName}</span>
@@ -168,7 +168,7 @@ const ChecklistsContent = ({ currentStep }) => {
               <button
                 className={`px-4 py-2 font-semibold ${
                   activeTab === 'preListing'
-                    ? 'border-b-2 border-[#3951BA] text-[#3951BA]'
+                    ? 'border-b-2 border-[#9094A5] text-[#E0E0E0]'
                     : 'text-gray-500'
                 }`}
                 onClick={() => setActiveTab('preListing')}
@@ -180,7 +180,7 @@ const ChecklistsContent = ({ currentStep }) => {
               <button
                 className={`px-4 py-2 font-semibold ${
                   activeTab === 'activeListing'
-                    ? 'border-b-2 border-[#3951BA] text-[#3951BA]'
+                    ? 'border-b-2 border-[#9094A5] text-[#E0E0E0]'
                     : 'text-gray-500'
                 }`}
                 onClick={() => setActiveTab('activeListing')}
@@ -207,7 +207,7 @@ const ChecklistsContent = ({ currentStep }) => {
               <button
                 className={`px-4 py-2 font-semibold ${
                   activeTab === 'preListing'
-                    ? 'border-b-2 border-[#3951BA] text-[#3951BA]'
+                    ? 'border-b-2 border-[#9094A5] text-[#E0E0E0]'
                     : 'text-gray-500'
                 }`}
                 onClick={() => setActiveTab('preListing')}
@@ -219,7 +219,7 @@ const ChecklistsContent = ({ currentStep }) => {
               <button
                 className={`px-4 py-2 font-semibold text-nowrap ${
                   activeTab === 'activeListing'
-                    ? 'border-b-2 border-[#3951BA] text-[#3951BA]'
+                    ? 'border-b-2 border-[#9094A5] text-[#E0E0E0]'
                     : 'text-gray-500'
                 }`}
                 onClick={() => setActiveTab('activeListing')}
@@ -231,7 +231,7 @@ const ChecklistsContent = ({ currentStep }) => {
               <button
                 className={`px-4 py-2 font-semibold text-nowrap ${
                   activeTab === 'UnderContract'
-                    ? 'border-b-2 border-[#3951BA]  text-[#3951BA]'
+                    ? 'border-b-2 border-[#9094A5]  text-[#E0E0E0]'
                     : 'text-gray-500'
                 }`}
                 onClick={() => setActiveTab('UnderContract')}

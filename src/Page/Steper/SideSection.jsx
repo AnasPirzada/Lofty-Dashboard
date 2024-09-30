@@ -42,7 +42,7 @@ export const SideSection = ({ setSelectedOption, selectedOption }) => {
     <div className='w-full md:w-80 h-auto md:h-[120vh] bg-white p-4 shadow-lg mt-1'>
       {/* Header and Address Sections */}
       <div className='flex items-center justify-between mb-4'>
-        <span className='bg-blue-100 text-blue-700 px-2 py-1 text-xs rounded-md'>
+        <span className='bg-gray-200 text-[#9094A5] px-2 py-1 text-xs rounded-md'>
           Listing
         </span>
         <div className='text-gray-400 cursor-pointer'>⋮</div>
@@ -97,14 +97,14 @@ export const SideSection = ({ setSelectedOption, selectedOption }) => {
               key={item.name}
               className={`px-2 py-1 rounded-md cursor-pointer flex justify-between items-center ${
                 selectedOption === item.name
-                  ? '!bg-[#C6D3F5] text-blue-700 font-medium'
-                  : 'hover:bg-gray-100 text-gray-600'
+                  ? '!bg-[#E0E0E0] text-[#9094A5] font-medium'
+                  : 'hover:bg-gray-100 text-gray-400'
               }`}
               onClick={() => setSelectedOption(item.name)}
             >
               {item.name}
               {item.hasBadge && (
-                <span className='text-sm text-[#3769ff] bg-[#C6D3F5] border border-[#7a9bff] px-2 py-0.5 rounded-full'>
+                <span className='text-sm text-[#9094A5] bg-white border border-[#9094A5] px-2 py-0.5 rounded-full'>
                   {item.count}
                 </span>
               )}

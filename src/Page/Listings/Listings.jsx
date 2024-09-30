@@ -105,7 +105,7 @@ const Listings = () => {
             <div className='flex flex-col space-y-1'>
               <img src='/burger.svg' className='h-10 w-10' alt='Menu icon' />
             </div>
-            <div className='bg-transparent text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-[#2c3b8b]'>
+            <div className='bg-transparent text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-[#9094A5]'>
               <img src='/layout.svg' className='h-10 w-10' alt='Layout icon' />
             </div>
           </div>

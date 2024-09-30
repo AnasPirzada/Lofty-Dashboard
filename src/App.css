@@ -3,14 +3,16 @@ body {
   overflow-x: hidden;
 }
 
-
+.option-custom::selection{
+  background-color: #9094A5;
+}
 
 .first {
   color: #9094A5;
 }
 
 .second {
-  color: #FFFFFF;
+  color: #E0E0E0;
 }
 
 /* Custom scrollbar */

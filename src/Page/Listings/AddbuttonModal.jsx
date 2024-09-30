@@ -106,12 +106,12 @@ const TransactionForm = ({ closeModal }) => {
                 </label>
                 <div className='flex justify-end mt-2'>
                   <button
-                    className='text-[#616161] mr-4'
+                    className='text-[#E0E0E0] mr-4'
                     onClick={() => setAddressMatch(false)} // Hide the section if 'Ignore' is clicked
                   >
                     Ignore
                   </button>
-                  <button className='text-white bg-[#616161] px-4 py-2 rounded-md'>
+                  <button className='text-white bg-[#E0E0E0] px-4 py-2 rounded-md'>
                     Link
                   </button>
                 </div>

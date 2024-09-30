@@ -26,11 +26,11 @@ const Toolbar = ({ onSearch }) => {
       <div className='col-span-12 md:col-span-7 grid grid-cols-12 gap-4 items-center'>
         {/* Transaction Owner Dropdown */}
         <div className='col-span-6 sm:col-span-3 relative'>
-          <select className='w-full border border-gray-300 rounded-lg px-4 py-2  focus:border-gray-700'>
-            <option>Transaction Owner</option>
-            <option>Liam Neeson</option>
-            <option> Doe</option>
-            <option>Jane </option>
+          <select className='w-full border border-gray-300 rounded-lg px-4 py-2  focus:border-gray-700 '>
+            <option >Transaction Owner</option>
+            <option >Liam Neeson</option>
+            <option > Doe</option>
+            <option >Jane </option>
           </select>
         </div>
 

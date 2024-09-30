@@ -106,7 +106,7 @@ export const TodayListing = () => {
               </td>
               {/* Assigned To column */}
               <td className='px-4 py-3'>
-                <span className='bg-blue-500 text-white px-2 py-1 rounded-full text-sm font-bold'>
+                <span className='bg-[#E0E0E0] text-[#9094A5] px-2 py-1 rounded-full text-sm font-bold'>
                   {task.assignedTo}
                 </span>
               </td>

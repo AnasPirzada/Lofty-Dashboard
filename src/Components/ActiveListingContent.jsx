@@ -31,7 +31,7 @@ export const ActiveListingContent = () => {
               {/* Assignee column */}
               <td className='px-4 py-3'>
                 <div className='flex items-center'>
-                  <span className='bg-purple-500 text-white px-2 py-1 rounded-full text-sm font-bold mr-2'>
+                  <span className='bg-[#E0E0E0] text-white px-2 py-1 rounded-full text-sm font-bold mr-2'>
                     KK
                   </span>
                   <p className='text-gray-800 text-nowrap'>Kari Kohler</p>

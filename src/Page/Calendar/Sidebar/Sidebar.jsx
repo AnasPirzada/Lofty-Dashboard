@@ -45,7 +45,7 @@ const Sidebar = ({
     <>
       {/* Toggle Button */}
       <button
-        className={`md:hidden fixed top-30 left-4 z-30 p-2 bg-[#3951BA] text-white rounded-lg px-6 focus:outline-none ${
+        className={`md:hidden fixed top-30 left-4 z-30 p-2 bg-[#9094A5] text-white rounded-lg px-6 focus:outline-none ${
           isOpen ? 'ms-32 mt-4 top-0' : ' left-0'
         } `}
         onClick={toggleSidebar}
@@ -55,7 +55,7 @@ const Sidebar = ({
 
       <div
         // className='w-64 bg-gray-900 text-gray-300 h-screen p-4'
-        className={` bg-gray-900 text-gray-300 p-4 z-40 transition-transform duration-300 ${
+        className={` bg-gray-600 text-gray-300 p-4 z-40 transition-transform duration-300 ${
           isOpen
             ? 'translate-x-0 fixed top-0 left-0 '
             : '-translate-x-full h-0 md:h-full'
@@ -86,7 +86,7 @@ const Sidebar = ({
                       }
                     }}
                     className={`cursor-pointer flex justify-between items-center  mt-1 px-2 py-1 rounded ${
-                      isSelected ? 'bg-gray-700 text-white' : ''
+                      isSelected ? 'bg-[#E0E0E0] text-[#9094A5]' : ''
                     }`}
                   >
                     {item}
