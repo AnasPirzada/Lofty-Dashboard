@@ -13,7 +13,7 @@ const LoginSignUpScreen = () => {
     // Redirect based on the form type
     if (isLogin) {
       // Redirect to listings after login
-      navigate('/listings');
+      navigate('/Transactions');
     } else {
       // Redirect to home after sign-up
       navigate('/');
@@ -21,14 +21,14 @@ const LoginSignUpScreen = () => {
   };
 
   return (
-    <div className='flex items-center justify-center min-h-screen bg-[#3951BA]'>
+    <div className='flex items-center justify-center min-h-screen bg-[#FFFFFF]'>
       <motion.div
-        className='bg-white rounded-lg shadow-lg mx-2 md:mx-0 p-8 max-w-sm w-full'
+        className='bg-gray-300 rounded-lg shadow-lg mx-2 md:mx-0 p-8 max-w-sm w-full'
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className='text-center text-2xl font-bold mb-6 text-[#3951BA]'>
+        <h2 className='text-center text-2xl font-bold mb-6 text-gray-700'>
           {isLogin ? 'Login' : 'Sign Up'}
         </h2>
 
@@ -41,7 +41,7 @@ const LoginSignUpScreen = () => {
               <input
                 type='text'
                 id='username'
-                className='w-full p-2 border border-gray-300 rounded'
+                className='w-full p-2 border border-grey-800 rounded'
                 placeholder='Enter your username'
                 required
               />
@@ -91,7 +91,7 @@ const LoginSignUpScreen = () => {
 
           <motion.button
             type='submit'
-            className='w-full py-2 bg-[#3951BA] text-white rounded hover:bg-blue-600 transition duration-200'
+            className='w-full py-2 bg-gray-700 text-white rounded hover:bg-gray-900 transition duration-200'
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -104,7 +104,7 @@ const LoginSignUpScreen = () => {
             {isLogin ? 'Don’t have an account? ' : 'Already have an account? '}
             <Link
               to='#'
-              className='text-[#3951BA] font-semibold'
+              className='text-gray-700 font-semibold'
               onClick={() => setIsLogin(!isLogin)}
             >
               {isLogin ? 'Sign Up' : 'Login'}

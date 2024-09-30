@@ -1,9 +1,4 @@
-import {
-  ChatIcon,
-  MenuIcon,
-  UserCircleIcon,
-  XIcon,
-} from '@heroicons/react/outline';
+import { MenuIcon, UserCircleIcon, XIcon } from '@heroicons/react/outline';
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom'; // Import React Router
@@ -16,10 +11,10 @@ const NavBar = () => {
 
   const navItems = [
     // { name: 'People', dropdown: true },
-    { name: 'Transactions', dropdown: false },
-    { name: 'Listings', dropdown: false, path: '/listings' },
+    { name: 'Transactions', dropdown: false, path: '/Transactions' },
+    // { name: 'Listings', dropdown: false, path: '/listings' },
     { name: 'Calendars', dropdown: false, path: '/calendars' },
-    { name: 'Marketing', dropdown: false },
+    // { name: 'Marketing', dropdown: false },
     // { name: 'Reporting', dropdown: false },
     // { name: 'Website', dropdown: false },
     // { name: 'Marketplace', dropdown: false },
@@ -61,7 +56,7 @@ const NavBar = () => {
                   to={item.path}
                   className={`flex items-center hover:text-gray-700 ${
                     activeItem === item.name
-                      ? 'border-b-4 border-[#3951BA] text-[#3951BA]'
+                      ? 'border-b-4 border-[#616161] text-[#616161]'
                       : ''
                   }`}
                   onClick={() => handleNavClick(item)}
@@ -78,7 +73,7 @@ const NavBar = () => {
                   onClick={() => handleNavClick(item)}
                   className={`flex items-center hover:text-gray-700 ${
                     activeItem === item.name
-                      ? 'border-b-4 border-[#3951BA] text-[#3951BA]'
+                      ? 'border-b-4 border-[#616161] text-[#616161]'
                       : ''
                   }`}
                 >
@@ -134,7 +129,7 @@ const NavBar = () => {
       {/* Right Section - Icons */}
       <div className='flex items-center space-x-4'>
         {/* <SearchIcon className='w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer' /> */}
-        <ChatIcon className='w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer' />
+        {/* <ChatIcon className='w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer' /> */}
         {/* <BellIcon className='w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer' />
         <QuestionMarkCircleIcon className='w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer' /> */}
         <UserCircleIcon className='w-8 h-8 text-gray-500 hover:text-gray-700 cursor-pointer' />
@@ -165,7 +160,7 @@ const NavBar = () => {
                 key={item.name}
                 className={`py-2 flex items-center justify-between w-full ${
                   activeItem === item.name
-                    ? 'border-b-4 border-[#3951BA] text-[#3951BA]'
+                    ? 'border-b-4 border-[#616161] text-[#616161]'
                     : ''
                 }`}
               >

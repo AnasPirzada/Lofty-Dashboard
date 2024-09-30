@@ -60,7 +60,7 @@ const TransactionForm = ({ closeModal }) => {
             setTransactionName(e.target.value);
             setShowTransactionSuggestions(true); // Show suggestions while typing
           }}
-          className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3951BA]'
+          className='w-full px-4 py-2 border border-gray-300 rounded-md'
         />
 
         {/* Suggestions for Transaction Name (addresses) */}
@@ -106,12 +106,12 @@ const TransactionForm = ({ closeModal }) => {
                 </label>
                 <div className='flex justify-end mt-2'>
                   <button
-                    className='text-[#3951BA] mr-4'
+                    className='text-[#616161] mr-4'
                     onClick={() => setAddressMatch(false)} // Hide the section if 'Ignore' is clicked
                   >
                     Ignore
                   </button>
-                  <button className='text-white bg-[#3951BA] px-4 py-2 rounded-md'>
+                  <button className='text-white bg-[#616161] px-4 py-2 rounded-md'>
                     Link
                   </button>
                 </div>
@@ -127,7 +127,7 @@ const TransactionForm = ({ closeModal }) => {
           Associated Lead *
         </label>
         <div className='relative'>
-          <div className='w-full flex justify-start items-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3951BA] '>
+          <div className='w-full flex justify-start items-center px-4 py-2 border border-gray-300 rounded-md '>
             <img
               src='/search-svgrepo-com.svg'
               className='w-5 h-5 me-3'
@@ -198,7 +198,7 @@ const TransactionForm = ({ closeModal }) => {
           <option>Purchase</option>
           <option>Listing</option>
           <option>Lease</option>
-          <option>other</option>
+          <option>Other</option>
         </motion.select>
       </div>
 
@@ -239,7 +239,7 @@ const TransactionForm = ({ closeModal }) => {
           </button>
           <Link to='/StepperSection'>
             <motion.button
-              className='px-4 py-2 text-white bg-[#3951BA] rounded-md'
+              className='px-4 py-2 text-white bg-[#616161] rounded-md'
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

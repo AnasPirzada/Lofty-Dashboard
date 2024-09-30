@@ -1,6 +1,5 @@
 // src/Page/Listings/Listings.jsx
 
-import { QuestionMarkCircleIcon } from '@heroicons/react/outline';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState } from 'react';
 import NavBar from '../../Components/NavBar';
@@ -15,9 +14,22 @@ const Listings = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'All':
-        return <div>Content for All</div>;
+        return (
+          <div>
+            {' '}
+            <div>
+              <ListingsSection />
+            </div>
+          </div>
+        );
       case 'Purchase':
-        return <div>Content for Purchase</div>;
+        return (
+          <div>
+            <div>
+              <ListingsSection />
+            </div>
+          </div>
+        );
       case 'Listing':
         return (
           <div>
@@ -25,11 +37,29 @@ const Listings = () => {
           </div>
         );
       case 'Lease':
-        return <div>Content for Lease</div>;
+        return (
+          <div>
+            <div>
+              <ListingsSection />
+            </div>
+          </div>
+        );
       case 'Referals':
-        return <div>Content for Referals</div>;
+        return (
+          <div>
+            <div>
+              <ListingsSection />
+            </div>
+          </div>
+        );
       case 'Other':
-        return <div>Content for Other</div>;
+        return (
+          <div>
+            <div>
+              <ListingsSection />
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -49,21 +79,22 @@ const Listings = () => {
               onClick={() => setActiveTab(tab)}
               className={`w-full py-2 px-4 text-center font-bold text-lg ${
                 activeTab === tab
-                  ? 'bg-[#FFFFFF] text-[#3951BA] shadow-lg' // Active tab style
-                  : 'bg-[#d8dbe6] text-[#9094A5] shadow' // Inactive tab style
+                  ? 'bg-[#F1F1F1F1] text-gray-900 shadow-lg' // Active tab style
+                  : 'bg-[#dddddd] text-gray-600 shadow' // Inactive tab style
               }`}
             >
               {tab}
             </button>
           ))}
-          <QuestionMarkCircleIcon className='w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer mt-3 md:mt-0 ms-3' />
+          {/* <QuestionMarkCircleIcon className='w-6 h-6 text-gray-500 hover:text-gray-700 cursor-pointer mt-3 md:mt-0 ms-3' /> */}
+          <br />
         </div>
 
         {/* Right Side Buttons Section */}
         <div className='col-span-12 lg:col-span-4 flex justify-center lg:justify-end items-center space-x-2 mt-4 md:mt-0'>
           <div className='flex items-center space-x-2'>
             <div
-              className='bg-[#3951BA] text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-[#2c3b8b]'
+              className='bg-gray-700 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-gray-900'
               onClick={() => setIsOpen(true)}
             >
               + Add | ▼

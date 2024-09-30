@@ -15,7 +15,7 @@ function App() {
       <Routes>
         {/* <Route path="/" element={<Listing />} /> Define route with element */}
         <Route path='/' element={<LoginSignUpScreen />} />{' '}
-        <Route path='/listings' element={<Listing />} />{' '}
+        <Route path='/Transactions' element={<Listing />} />{' '}
         <Route path='/Calendars' element={<Calendar />} />{' '}
         <Route path='/StepperSection' element={<Index />} />{' '}
         {/* Route for Listings */}

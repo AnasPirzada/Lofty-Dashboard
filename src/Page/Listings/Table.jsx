@@ -17,7 +17,7 @@ const Toolbar = ({ onSearch }) => {
           type='text'
           value={searchTerm}
           onChange={handleSearch}
-          className='w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:border-blue-300'
+          className='w-full border border-gray-300 rounded-lg px-4 py-2 focus:border-gray-700'
           placeholder='Search by Transaction, Address, Lead, Note'
         />
       </div>
@@ -26,7 +26,7 @@ const Toolbar = ({ onSearch }) => {
       <div className='col-span-12 md:col-span-7 grid grid-cols-12 gap-4 items-center'>
         {/* Transaction Owner Dropdown */}
         <div className='col-span-6 sm:col-span-3 relative'>
-          <select className='w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:border-blue-300'>
+          <select className='w-full border border-gray-300 rounded-lg px-4 py-2  focus:border-gray-700'>
             <option>Transaction Owner</option>
             <option>Liam Neeson</option>
             <option> Doe</option>
@@ -36,7 +36,7 @@ const Toolbar = ({ onSearch }) => {
 
         {/* Expected Close/Closed Date Dropdown */}
         <div className='col-span-6 sm:col-span-3 relative'>
-          <select className='w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:border-blue-300'>
+          <select className='w-full border border-gray-300 rounded-lg px-4 py-2  focus:border-gray-700'>
             <option>Expected Close/Closed Date</option>
             <option>Today</option>
             <option>This Week</option>
@@ -48,7 +48,7 @@ const Toolbar = ({ onSearch }) => {
         <div className='col-span-6 sm:col-span-3'>
           <motion.button
             whileHover={{ scale: 1.05 }}
-            className='w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:border-blue-300'
+            className='w-full border border-gray-300 rounded-lg px-4 py-2  focus:border-gray-700'
           >
             More Filters (0)
           </motion.button>
@@ -58,7 +58,7 @@ const Toolbar = ({ onSearch }) => {
         <div className='col-span-6 sm:col-span-3'>
           <motion.button
             whileHover={{ scale: 1.05 }}
-            className='w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:border-blue-300'
+            className='w-full border border-gray-300 rounded-lg px-4 py-2  focus:border-gray-700'
           >
             Columns
           </motion.button>
@@ -369,7 +369,7 @@ const TableWithToolbar = () => {
                     <button className='ml-2 focus:outline-none'>
                       <svg
                         xmlns='http://www.w3.org/2000/svg'
-                        className='h-6 w-6 text-gray-500 hover:text-blue-500'
+                        className='h-6 w-6 text-gray-500 hover:text-gray-900'
                         fill='none'
                         viewBox='0 0 24 24'
                         stroke='currentColor'

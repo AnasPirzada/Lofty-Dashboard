@@ -43,7 +43,7 @@ const ListingsSection = () => {
       {/* Header Section */}
       <div className='flex justify-between w-full flex-wrap items-center mb-4'>
         <div className='flex items-center'>
-          <p className='font-semibold text-sm text-gray-500'>Volume</p>
+          <p className='font-semibold text-sm text-gray-700'>Volume</p>
           <img src='/down.svg' className='w-5 ml-2 mt-2 h-5' alt='dropdown' />
         </div>
         <div>
@@ -57,13 +57,13 @@ const ListingsSection = () => {
           <div
             key={item.title}
             className={` text-start ${
-              index === 0 ? 'text-blue-600' : 'text-gray-700'
+              index === 0 ? 'text-gray-700' : 'text-gray-400'
             }`} // First item highlighted in blue
           >
             <div className='flex justify-start items-center space-x-2'>
               <p
                 className={`font-semibold text-sm ${
-                  index === 0 ? 'text-blue-600' : 'text-gray-500'
+                  index === 0 ? 'text-gray-700' : 'text-gray-400'
                 }`}
               >
                 {item.title}
@@ -73,7 +73,7 @@ const ListingsSection = () => {
             <div className='my-2'>
               <p
                 className={`font-bold text-2xl ${
-                  index === 0 ? 'text-blue-600' : 'text-gray-800'
+                  index === 0 ? 'text-gray-700' : 'text-gray-400'
                 }`}
               >
                 {item.amount}
