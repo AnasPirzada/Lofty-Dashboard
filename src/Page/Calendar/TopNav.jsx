@@ -14,7 +14,7 @@ const TopNav = () => {
     <div className='bg-[#E0E0E0]'>
       <div className='grid grid-cols-1 md:grid-cols-12 gap-4 py-3 px-5'>
         <div className='col-span-12 md:col-span-6'>
-          <div className='grid grid-cols-2 gap-2 bg-gray-400 p-2 rounded-lg'>
+          <div className='grid grid-cols-2 gap-2 bg-gray-700 p-2 rounded-lg'>
             <button className='col-span-1 font-semibold shadow-lg bg-white rounded-lg text-[#9094A5] p-2'>
               Calendar
             </button>
@@ -27,7 +27,7 @@ const TopNav = () => {
           </div>
         </div>
         <div className='col-span-12 md:col-span-2 md:col-start-11'>
-          <div className='bg-[#9094A5] text-white px-4 py-2 rounded-lg cursor-pointer text-center hover:bg-[#E0E0E0]'>
+          <div className='bg-gray-700 text-white px-4 py-2 rounded-lg cursor-pointer text-center'>
             + Add | ▼
           </div>
         </div>

@@ -71,7 +71,7 @@ const ChecklistsContent = ({ currentStep }) => {
           {!checklistApplied ? (
             <>
               <div className='flex justify-end items-center'>
-                <button className='bg-[#9094A5] py-1 drop-shadow-lg flex mt-4 me-4 text-white px-6 rounded-lg'>
+                <button className='bg-[#616161] py-1 drop-shadow-lg flex mt-4 me-4 text-white px-6 rounded-lg'>
                   Action{' '}
                   <img src='/downwhite.svg' className='w-7 h-7 ms-4' alt='' />
                 </button>
@@ -89,7 +89,7 @@ const ChecklistsContent = ({ currentStep }) => {
               <div className='grid flex-col mt-10 justify-center items-center grid-cols-12'>
                 <div className='grid col-span-3'></div>
                 <div className='grid col-span-6'>
-                  <button className='bg-[#9094A5] text-white py-2 w-full rounded-lg'>
+                  <button className='bg-[#616161] text-white py-2 w-full rounded-lg'>
                     Add an individual Task
                   </button>
                 </div>
@@ -100,7 +100,7 @@ const ChecklistsContent = ({ currentStep }) => {
                 <div className='grid col-span-3'></div>
                 <div className='grid col-span-6'>
                   <button
-                    className='bg-[#9094A5] text-white py-2 w-full rounded-lg'
+                    className='bg-[#616161] text-white py-2 w-full rounded-lg'
                     onClick={() => setIsOpen(true)}
                   >
                     Apply a checklist Template

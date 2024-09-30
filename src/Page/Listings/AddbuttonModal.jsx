@@ -239,7 +239,7 @@ const TransactionForm = ({ closeModal }) => {
           </button>
           <Link to='/StepperSection'>
             <motion.button
-              className='px-4 py-2 text-white bg-[#616161] rounded-md'
+              className='px-4 py-2 text-white bg-gray-700 rounded-md'
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

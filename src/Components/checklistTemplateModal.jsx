@@ -165,7 +165,7 @@ export const ChecklistTemplateModal = ({
                 </div>
                 <div className='mt-4 ms-6'>
                   <button
-                    className='bg-[#9094A5] py-2 px-3 rounded-lg text-white'
+                    className='bg-[#616161] py-2 px-3 rounded-lg text-white'
                     onClick={handleConfirm}
                   >
                     Confirm

@@ -131,7 +131,7 @@ const Stepper = ({ selectedOption }) => {
           ))}
         </div>
 
-        <div className='flex mt-4 md:mt-0 md:ms-10 justify-center'>
+        <div className='flex mt-4 md:-mt-3 md:ms-10 justify-center'>
           <div
             className='bg-[#E0E0E0] px-3 py-1 me-4 flex justify-center items-center rounded-lg cursor-pointer'
             onClick={handlePrev}

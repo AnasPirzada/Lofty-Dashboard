@@ -60,9 +60,7 @@ export const PreListingContent = () => {
       assignedTo: 'RS',
       dueDate: 'In 3 days',
     },
-  
-    
-  
+
     {
       transactionType: 'Transaction',
       address: '369 Giggle St, Nashville, TN 37201',
@@ -123,11 +121,11 @@ export const PreListingContent = () => {
                 <span>{task.taskDescription}</span>
               </td>
               {/* Assigned To column */}
-              <td className='px-4 py-3'>
+              {/* <td className='px-4 py-3'>
                 <span className='bg-blue-500 text-white px-2 py-1 rounded-full text-sm font-bold'>
                   {task.assignedTo}
                 </span>
-              </td>
+              </td> */}
               {/* Due Date column */}
               <td className='px-4 py-3'>
                 <span>{task.dueDate}</span>
