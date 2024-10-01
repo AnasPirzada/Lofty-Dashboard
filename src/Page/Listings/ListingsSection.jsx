@@ -46,9 +46,9 @@ const ListingsSection = () => {
           <p className='font-semibold text-sm text-gray-700'>Volume</p>
           <img src='/down.svg' className='w-5 ml-2 mt-2 h-5' alt='dropdown' />
         </div>
-        <div>
+        {/* <div>
           <img src='/setting.svg' className='w-6 h-6' alt='settings' />
-        </div>
+        </div> */}
       </div>
 
       {/* Transaction Section - Responsive Layout */}
