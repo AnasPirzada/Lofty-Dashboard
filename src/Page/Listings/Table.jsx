@@ -12,7 +12,7 @@ const Toolbar = ({ onSearch }) => {
   return (
     <div className='grid grid-cols-12 gap-4 border-border-1 justify-between p-2 items-center'>
       {/* Search input */}
-      <div className='col-span-12 md:col-span-4'>
+      <div className='col-span-12 md:col-span-5'>
         <input
           type='text'
           value={searchTerm}
@@ -21,47 +21,15 @@ const Toolbar = ({ onSearch }) => {
           placeholder='Search by Transaction, Address, Lead, Note'
         />
       </div>
-      <div className='col-span-12 md:col-span-1 grid grid-cols-12 gap-4 items-center'></div>
-      {/* Dropdowns and Buttons */}
-      <div className='col-span-12 md:col-span-7 grid grid-cols-12 gap-4 items-center'>
-        {/* Transaction Owner Dropdown */}
-        <div className='col-span-6 sm:col-span-3 relative'>
-          {/* <select className='w-full border border-gray-300 rounded-lg px-4 py-2  focus:border-gray-700 '>
-            <option >Transaction Owner</option>
-            <option >Liam Neeson</option>
-            <option > Doe</option>
-            <option >Jane </option>
-          </select> */}
-        </div>
-
-        {/* Expected Close/Closed Date Dropdown */}
-        <div className='col-span-6 sm:col-span-3 relative'>
+      <div className='col-span-3 md:col-span-3'></div>
+      <div className='col-span-12 md:col-span-4'>
+        <div className='col-span-6 sm:col-span-6 relative'>
           <select className='w-full border border-gray-300 rounded-lg px-4 py-2  focus:border-gray-700'>
             <option>Expected Close/Closed Date</option>
             <option>Today</option>
             <option>This Week</option>
             <option>This Month</option>
           </select>
-        </div>
-
-        {/* More Filters Button */}
-        <div className='col-span-6 sm:col-span-3'>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            className='w-full border border-gray-300 rounded-lg px-4 py-2  focus:border-gray-700'
-          >
-            More Filters (0)
-          </motion.button>
-        </div>
-
-        {/* Columns Button */}
-        <div className='col-span-6 sm:col-span-3'>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            className='w-full border border-gray-300 rounded-lg px-4 py-2  focus:border-gray-700'
-          >
-            Columns
-          </motion.button>
         </div>
       </div>
     </div>
