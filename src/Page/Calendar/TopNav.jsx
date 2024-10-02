@@ -13,14 +13,16 @@ const TopNav = () => {
   return (
     <div className='bg-[#E0E0E0]'>
       <div className='grid grid-cols-1 md:grid-cols-12 gap-4 py-3 px-5'>
-        <div className='col-span-12 md:col-span-6'>
-          <div className='grid grid-cols-2 gap-2 bg-gray-700 p-2 rounded-lg'>
-            <button className='col-span-1 font-semibold shadow-lg bg-white rounded-lg text-[#9094A5] p-2'>
+        <div className='col-span-12 md:col-span-3'>
+          <div className='grid grid-cols-1 bg-gray-700 p-2 rounded-lg'>
+            {/* <button className='col-span-1 font-semibold shadow-lg bg-white rounded-lg text-[#9094A5] p-2'>
               Calendar
-            </button>
-            <button className='col-span-1 font-semibold bg-transparent text-white py-2 ps-4'>
-              Task
-            </button>
+            </button> */}
+            <div className='text-center'>
+              <button className=' font-semibold bg-transparent text-white py-2 '>
+                Task
+              </button>
+            </div>
             {/* <button className='col-span-1 font-semibold py-2 px-4 text-white'>
               Showing
             </button> */}
