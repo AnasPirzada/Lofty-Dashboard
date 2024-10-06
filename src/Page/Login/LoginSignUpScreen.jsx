@@ -61,7 +61,7 @@ const LoginSignUpScreen = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username, email, password, confirmPassword }),
       });
 
       const data = await response.json();
