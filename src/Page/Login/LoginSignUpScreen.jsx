@@ -10,7 +10,7 @@ const LoginSignUpScreen = () => {
     username: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    confirmPassword: '', // State key uses camelCase
   });
   const [isLogin, setIsLogin] = useState(true);
 
@@ -149,13 +149,13 @@ const LoginSignUpScreen = () => {
             <div className='mb-4'>
               <label
                 className='block text-gray-700 mb-2'
-                htmlFor='confirm-password'
+                htmlFor='confirmPassword' // Updated id to match state key
               >
                 Confirm Password
               </label>
               <input
                 type='password'
-                id='confirm-password'
+                id='confirmPassword' // Corrected the id here
                 className='w-full p-2 border border-gray-300 rounded'
                 placeholder='Confirm your password'
                 value={formData.confirmPassword}
@@ -166,19 +166,15 @@ const LoginSignUpScreen = () => {
           )}
           {/* Conditional button rendering */}
           {isLogin ? (
-            <>
-              {/* Separate Buttons for Login and Signup */}
-              <motion.button
-                type='submit'
-                className='w-full py-2 bg-gray-700 text-white rounded hover:bg-gray-900 transition duration-200 mb-4'
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={e => handleSubmit(e, 'login')}
-                disabled={!isLogin}
-              >
-                Login
-              </motion.button>
-            </>
+            <motion.button
+              type='submit'
+              className='w-full py-2 bg-gray-700 text-white rounded hover:bg-gray-900 transition duration-200 mb-4'
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={e => handleSubmit(e, 'login')}
+            >
+              Login
+            </motion.button>
           ) : (
             <motion.button
               type='submit'
@@ -186,7 +182,6 @@ const LoginSignUpScreen = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={e => handleSubmit(e, 'signup')}
-              disabled={isLogin}
             >
               Sign Up
             </motion.button>
