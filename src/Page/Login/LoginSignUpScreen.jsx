@@ -1,27 +1,94 @@
+// Import dependencies
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginSignUpScreen = () => {
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
   const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
 
-  const handleSubmit = e => {
-    e.preventDefault(); // Prevent default form submission
-    // You can add your authentication logic here
+  // Handle input change
+  const handleChange = e => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
 
-    // Redirect based on the form type
-    if (isLogin) {
-      // Redirect to listings after login
-      navigate('/Transactions');
+  // Function to handle Login API call
+  const handleLogin = async () => {
+    const { email, password } = formData;
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success('Login successful!');
+        navigate('/Transactions'); // Redirect to Transactions on success
+      } else {
+        throw new Error(data.message || 'Login failed');
+      }
+    } catch (error) {
+      toast.error(error.message || 'Login failed. Please try again.');
+    }
+  };
+
+  // Function to handle Signup API call
+  const handleSignup = async () => {
+    const { username, email, password, confirmPassword } = formData;
+
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match!');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success('Signup successful!');
+        navigate('/'); // Redirect to homepage on success
+      } else {
+        throw new Error(data.message || 'Signup failed');
+      }
+    } catch (error) {
+      toast.error(error.message || 'Signup failed. Please try again.');
+    }
+  };
+
+  // Handle form submission based on which button is clicked
+  const handleSubmit = (e, action) => {
+    e.preventDefault();
+    if (action === 'login') {
+      handleLogin();
     } else {
-      // Redirect to home after sign-up
-      navigate('/');
+      handleSignup();
     }
   };
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-[#FFFFFF]'>
+      <ToastContainer />
       <motion.div
         className='bg-gray-300 rounded-lg shadow-lg mx-2 md:mx-0 p-8 max-w-sm w-full'
         initial={{ opacity: 0, scale: 0.8 }}
@@ -32,9 +99,9 @@ const LoginSignUpScreen = () => {
           {isLogin ? 'Login' : 'Sign Up'}
         </h2>
 
-        <form onSubmit={handleSubmit}>
+        <form>
           {!isLogin && (
-            <div className='mb-4 '>
+            <div className='mb-4'>
               <label className='block text-gray-700 mb-2' htmlFor='username'>
                 Username
               </label>
@@ -43,7 +110,9 @@ const LoginSignUpScreen = () => {
                 id='username'
                 className='w-full p-2 border border-grey-800 rounded'
                 placeholder='Enter your username'
-                required
+                value={formData.username}
+                onChange={handleChange}
+                required={!isLogin}
               />
             </div>
           )}
@@ -56,6 +125,8 @@ const LoginSignUpScreen = () => {
               id='email'
               className='w-full p-2 border border-gray-300 rounded'
               placeholder='Enter your email'
+              value={formData.email}
+              onChange={handleChange}
               required
             />
           </div>
@@ -68,6 +139,8 @@ const LoginSignUpScreen = () => {
               id='password'
               className='w-full p-2 border border-gray-300 rounded'
               placeholder='Enter your password'
+              value={formData.password}
+              onChange={handleChange}
               required
             />
           </div>
@@ -84,18 +157,34 @@ const LoginSignUpScreen = () => {
                 id='confirm-password'
                 className='w-full p-2 border border-gray-300 rounded'
                 placeholder='Confirm your password'
+                value={formData.confirmPassword}
+                onChange={handleChange}
                 required
               />
             </div>
           )}
+
+          {/* Separate Buttons for Login and Signup */}
+          <motion.button
+            type='submit'
+            className='w-full py-2 bg-gray-700 text-white rounded hover:bg-gray-900 transition duration-200 mb-4'
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={e => handleSubmit(e, 'login')}
+            disabled={!isLogin}
+          >
+            Login
+          </motion.button>
 
           <motion.button
             type='submit'
             className='w-full py-2 bg-gray-700 text-white rounded hover:bg-gray-900 transition duration-200'
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onClick={e => handleSubmit(e, 'signup')}
+            disabled={isLogin}
           >
-            {isLogin ? 'Login' : 'Sign Up'}
+            Sign Up
           </motion.button>
         </form>
 
