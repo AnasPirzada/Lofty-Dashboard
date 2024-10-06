@@ -10,6 +10,7 @@ const LoginSignUpScreen = () => {
     username: '',
     email: '',
     password: '',
+    confirmPassword: '', // State key uses camelCase
   });
   const [isLogin, setIsLogin] = useState(true);
 
@@ -47,7 +48,12 @@ const LoginSignUpScreen = () => {
 
   // Function to handle Signup API call
   const handleSignup = async () => {
-    const { username, email, password } = formData;
+    const { username, email, password, confirmPassword } = formData;
+
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match!');
+      return;
+    }
 
     try {
       const response = await fetch('http://localhost:3000/api/auth/signup', {
@@ -139,6 +145,26 @@ const LoginSignUpScreen = () => {
               required
             />
           </div>
+          {!isLogin && (
+            <div className='mb-4'>
+              <label
+                className='block text-gray-700 mb-2'
+                htmlFor='confirmPassword' // Updated id to match state key
+              >
+                Confirm Password
+              </label>
+              <input
+                type='password'
+                id='confirmPassword' // Corrected the id here
+                className='w-full p-2 border border-gray-300 rounded'
+                placeholder='Confirm your password'
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                disabled={!formData.password} // Disable unless password is filled
+              />
+            </div>
+          )}
           {/* Conditional button rendering */}
           {isLogin ? (
             <motion.button
