@@ -66,23 +66,11 @@ export const PreListingContent = () => {
               </td>
               {/* Address column */}
               <td className='px-4 py-3'>
-                {/* Show 'state' for the first task */}
-                {index === 0 ? (
-                  <span className='text-nowrap'>{task.state}</span>
-                ) : (
-                  <span className='text-nowrap'>{task.address}</span>
-                )}
+                <span className='text-nowrap'>{task.state}</span>
               </td>
               {/* Task Description column */}
               <td className='px-4 py-3'>
-                {/* Show 'task_name - description' for the second task */}
-                {index === 1 ? (
-                  <span>
-                    {task.task_name} - {task.description}
-                  </span>
-                ) : (
-                  <span>{task.taskDescription}</span>
-                )}
+                <span>{task.task_name}</span>
               </td>
               {/* Task Days column */}
               <td className='px-4 py-3'>
