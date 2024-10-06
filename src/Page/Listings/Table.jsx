@@ -112,7 +112,6 @@ const TableWithToolbar = () => {
                 <th className='px-4 py-2 text-left text-gray-700'>
                   Client Name
                 </th>
-                <th className='px-4 py-2 text-left text-gray-700'>Tasks</th>
                 <th className='px-4 py-2 text-left text-gray-700'>Stage</th>
                 <th className='px-4 py-2 text-left text-gray-700'>
                   Expected Close
@@ -136,16 +135,13 @@ const TableWithToolbar = () => {
                   className='border-b text-nowrap hover:bg-gray-50'
                 >
                   <td className='px-4 py-2 text-gray-600'>{row.state_id}</td>
-                  <td className='px-4 py-2 text-gray-600'>{row.createdBy}</td>
+                  <td className='px-4 py-2 text-gray-600'>{row.created_by}</td>
                   <td className='px-4 py-2 text-gray-600'>{row.task_status}</td>
-                  <td className='px-4 py-2 text-gray-600'>{row.stage}</td>
                   <td className='px-4 py-2 text-gray-600'>
                     {row.expectedClose}
                   </td>
                   <td className='px-4 py-2 text-gray-600'>{row.sale_price}</td>
-                  <td className='px-4 py-2 text-gray-600'>
-                    {row.transactionOwner}
-                  </td>
+                  <td className='px-4 py-2 text-gray-600'>{row.created_by}</td>
                   <td className='px-4 py-2 text-gray-600'>
                     {row.closedDate || 'N/A'}
                   </td>
