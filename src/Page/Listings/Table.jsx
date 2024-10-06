@@ -59,7 +59,7 @@ const TableWithToolbar = () => {
         state_id: transaction.state_id, // Property Address
         createdBy: transaction.createdBy, // Client Name
         task_status: transaction.task_status, // Tasks
-        expectedClose: transaction.expectedClose, // Expected Close Date
+        expectedClose: transaction.expectedClose || null, // Expected Close Date, show N/A if null
         sale_price: transaction.sale_price, // Sale Price
         transactionOwner: transaction.transactionOwner, // Original fields
         stage: mapStage(transaction.stage_id), // Map stage_id to readable form
@@ -78,12 +78,13 @@ const TableWithToolbar = () => {
       case 1:
         return 'Active Listing';
       case 2:
-        return 'Pre-listing';
+        return 'Prelisting';
       case 3:
-        return 'Under-contract';
-
-      default:
+        return 'Undercontract';
+      case 4:
         return 'Close';
+      default:
+        return 'Unknown';
     }
   };
 
@@ -93,6 +94,12 @@ const TableWithToolbar = () => {
     );
     setFilteredData(filtered);
     setCurrentPage(1); // Reset to the first page on new search
+  };
+
+  const handleDateChange = (date, index) => {
+    const updatedTransactions = [...filteredData];
+    updatedTransactions[index].expectedClose = date; // Update the expectedClose date
+    setFilteredData(updatedTransactions); // Update state
   };
 
   // Calculate pagination
@@ -144,14 +151,26 @@ const TableWithToolbar = () => {
                   className='border-b text-nowrap hover:bg-gray-50'
                 >
                   <td className='px-4 py-2 text-gray-600'>{row.state_id}</td>
-                  <td className='px-4 py-2 text-gray-600'>{row.created_by}</td>
+                  <td className='px-4 py-2 text-gray-600'>{row.createdBy}</td>
                   <td className='px-4 py-2 text-gray-600'>{row.task_status}</td>
                   <td className='px-4 py-2 text-gray-600'>{row.stage}</td>
                   <td className='px-4 py-2 text-gray-600 flex justify-start items-center'>
-                    {row.expectedClose}
+                    {row.expectedClose ? (
+                      row.expectedClose
+                    ) : (
+                      <span className='text-red-500'>N/A</span>
+                    )}
 
                     {/* Add a calendar icon that triggers date selection */}
-                    <button className='ml-2 focus:outline-none'>
+                    <button
+                      className='ml-2 focus:outline-none'
+                      onClick={() => {
+                        const datePicker = document.getElementById(
+                          `date-picker-${index}`
+                        );
+                        datePicker.click(); // Programmatically open the date picker
+                      }}
+                    >
                       <svg
                         xmlns='http://www.w3.org/2000/svg'
                         className='h-6 w-6 text-gray-500 hover:text-gray-900'
@@ -168,11 +187,12 @@ const TableWithToolbar = () => {
                       </svg>
                     </button>
 
-                    {/* Hidden date input that can be toggled */}
+                    {/* Date input (Hidden by default, shown when calendar is clicked) */}
                     <input
                       type='date'
                       className='hidden'
-                      id={`date-picker-${index}`} // Ensure unique ID for each row
+                      id={`date-picker-${index}`} // Unique ID for each row
+                      onChange={e => handleDateChange(e.target.value, index)}
                     />
                   </td>
                   <td className='px-4 py-2 text-gray-600'>${row.sale_price}</td>
