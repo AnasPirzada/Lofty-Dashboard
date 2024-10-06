@@ -151,14 +151,14 @@ const TableWithToolbar = () => {
                   className='border-b text-nowrap hover:bg-gray-50'
                 >
                   <td className='px-4 py-2 text-gray-600'>{row.state_id}</td>
-                  <td className='px-4 py-2 text-gray-600'>{row.createdBy}</td>
+                  <td className='px-4 py-2 text-gray-600'>{row.created_by}</td>
                   <td className='px-4 py-2 text-gray-600'>{row.task_status}</td>
                   <td className='px-4 py-2 text-gray-600'>{row.stage}</td>
                   <td className='px-4 py-2 text-gray-600 flex justify-start items-center'>
                     {row.expectedClose ? (
                       row.expectedClose
                     ) : (
-                      <span className='text-red-500'>N/A</span>
+                      <span className='text-black'>N/A</span>
                     )}
 
                     {/* Add a calendar icon that triggers date selection */}
