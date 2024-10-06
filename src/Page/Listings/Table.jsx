@@ -57,7 +57,7 @@ const TableWithToolbar = () => {
       // Map the required fields from the response
       const mappedData = data.map(transaction => ({
         state_id: transaction.state_id, // Property Address
-        createdBy: transaction.createdBy, // Client Name
+        createdBy: transaction.created_by, // Client Name
         task_status: transaction.task_status, // Tasks
         expectedClose: transaction.expectedClose || null, // Expected Close Date, show N/A if null
         sale_price: transaction.sale_price, // Sale Price
