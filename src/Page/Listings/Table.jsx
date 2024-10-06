@@ -62,7 +62,7 @@ const TableWithToolbar = () => {
         expectedClose: transaction.expectedClose, // Expected Close Date
         sale_price: transaction.sale_price, // Sale Price
         transactionOwner: transaction.transactionOwner, // Original fields
-        stage: transaction.stage,
+        stage: mapStage(transaction.stage_id), // Map stage_id to readable form
         closedDate: transaction.closedDate,
       }));
 
@@ -70,6 +70,20 @@ const TableWithToolbar = () => {
       setFilteredData(mappedData);
     } catch (error) {
       toast.error('Failed to fetch transactions');
+    }
+  };
+
+  const mapStage = stageId => {
+    switch (stageId) {
+      case 1:
+        return 'Active Listing';
+      case 2:
+        return 'Pre-listing';
+      case 3:
+        return 'Under-contract';
+
+      default:
+        return 'Close';
     }
   };
 
@@ -112,18 +126,13 @@ const TableWithToolbar = () => {
                 <th className='px-4 py-2 text-left text-gray-700'>
                   Client Name
                 </th>
+                <th className='px-4 py-2 text-left text-gray-700'>Task</th>
                 <th className='px-4 py-2 text-left text-gray-700'>Stage</th>
                 <th className='px-4 py-2 text-left text-gray-700'>
                   Expected Close
                 </th>
                 <th className='px-4 py-2 text-left text-gray-700'>
                   Sales Price
-                </th>
-                <th className='px-4 py-2 text-left text-gray-700'>
-                  Transaction Owner
-                </th>
-                <th className='px-4 py-2 text-left text-gray-700'>
-                  Closed Date
                 </th>
               </tr>
             </thead>
@@ -135,16 +144,38 @@ const TableWithToolbar = () => {
                   className='border-b text-nowrap hover:bg-gray-50'
                 >
                   <td className='px-4 py-2 text-gray-600'>{row.state_id}</td>
-                  <td className='px-4 py-2 text-gray-600'>{row.created_by}</td>
+                  <td className='px-4 py-2 text-gray-600'>{row.createdBy}</td>
                   <td className='px-4 py-2 text-gray-600'>{row.task_status}</td>
-                  <td className='px-4 py-2 text-gray-600'>
+                  <td className='px-4 py-2 text-gray-600'>{row.stage}</td>
+                  <td className='px-4 py-2 text-gray-600 flex justify-start items-center'>
                     {row.expectedClose}
+
+                    {/* Add a calendar icon that triggers date selection */}
+                    <button className='ml-2 focus:outline-none'>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        className='h-6 w-6 text-gray-500 hover:text-gray-900'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                        stroke='currentColor'
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          d='M8 7V3m8 4V3m-9 8h10m-10 4h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'
+                        />
+                      </svg>
+                    </button>
+
+                    {/* Hidden date input that can be toggled */}
+                    <input
+                      type='date'
+                      className='hidden'
+                      id={`date-picker-${index}`} // Ensure unique ID for each row
+                    />
                   </td>
-                  <td className='px-4 py-2 text-gray-600'>{row.sale_price}</td>
-                  <td className='px-4 py-2 text-gray-600'>{row.created_by}</td>
-                  <td className='px-4 py-2 text-gray-600'>
-                    {row.closedDate || 'N/A'}
-                  </td>
+                  <td className='px-4 py-2 text-gray-600'>${row.sale_price}</td>
                 </motion.tr>
               ))}
             </tbody>

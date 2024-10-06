@@ -13,12 +13,12 @@ export const PreListingContent = () => {
         return 'Today';
       case 2:
         return 'Tomorrow';
-      case 3:
-        return 'Next Week';
-      case 4:
-        return 'Yesterday';
+      // case 3:
+      //   return 'Next Week';
+      // case 4:
+      //   return 'Yesterday';
       default:
-        return `In ${task_days} days`;
+        return `Next Week`;
     }
   };
 
