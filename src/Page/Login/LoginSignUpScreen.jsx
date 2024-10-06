@@ -13,6 +13,7 @@ const LoginSignUpScreen = () => {
     confirmPassword: '',
   });
   const [isLogin, setIsLogin] = useState(true);
+
   const navigate = useNavigate();
 
   // Handle input change
@@ -163,29 +164,33 @@ const LoginSignUpScreen = () => {
               />
             </div>
           )}
-
-          {/* Separate Buttons for Login and Signup */}
-          <motion.button
-            type='submit'
-            className='w-full py-2 bg-gray-700 text-white rounded hover:bg-gray-900 transition duration-200 mb-4'
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={e => handleSubmit(e, 'login')}
-            disabled={!isLogin}
-          >
-            Login
-          </motion.button>
-
-          <motion.button
-            type='submit'
-            className='w-full py-2 bg-gray-700 text-white rounded hover:bg-gray-900 transition duration-200'
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={e => handleSubmit(e, 'signup')}
-            disabled={isLogin}
-          >
-            Sign Up
-          </motion.button>
+          {/* Conditional button rendering */}
+          {isLogin ? (
+            <>
+              {/* Separate Buttons for Login and Signup */}
+              <motion.button
+                type='submit'
+                className='w-full py-2 bg-gray-700 text-white rounded hover:bg-gray-900 transition duration-200 mb-4'
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={e => handleSubmit(e, 'login')}
+                disabled={!isLogin}
+              >
+                Login
+              </motion.button>
+            </>
+          ) : (
+            <motion.button
+              type='submit'
+              className='w-full py-2 bg-gray-700 text-white rounded hover:bg-gray-900 transition duration-200'
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={e => handleSubmit(e, 'signup')}
+              disabled={isLogin}
+            >
+              Sign Up
+            </motion.button>
+          )}
         </form>
 
         <div className='text-center mt-4'>
