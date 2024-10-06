@@ -196,7 +196,7 @@ const LoginSignUpScreen = () => {
               className='text-gray-700 font-semibold'
               onClick={() => setIsLogin(!isLogin)}
             >
-              {isLogin ? 'Sign Up' : 'Login'}
+              {isLogin ? 'Sign-Up' : 'Login'}
             </Link>
           </span>
         </div>
