@@ -76,15 +76,13 @@ const TableWithToolbar = () => {
   const mapStage = stageId => {
     switch (stageId) {
       case 1:
-        return 'Active Listing';
+        return 'Pre Listing';
       case 2:
-        return 'Prelisting';
+        return 'Active listing';
       case 3:
         return 'Undercontract';
-      case 4:
-        return 'Close';
       default:
-        return 'Unknown';
+        return '';
     }
   };
 
