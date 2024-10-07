@@ -25,7 +25,7 @@ const LoginSignUpScreen = () => {
   const handleLogin = async () => {
     const { email, password } = formData;
     try {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const response = await fetch('http://ec2-34-229-209-174.compute-1.amazonaws.com:3003/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const LoginSignUpScreen = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/auth/signup', {
+      const response = await fetch('http://ec2-34-229-209-174.compute-1.amazonaws.com:3003/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

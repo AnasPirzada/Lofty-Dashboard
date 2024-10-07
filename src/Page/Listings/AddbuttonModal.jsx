@@ -281,7 +281,7 @@ const TransactionForm = ({ closeModal }) => {
 
     try {
       const response = await fetch(
-        'http://localhost:3000/api/transactions/add',
+        'http://ec2-34-229-209-174.compute-1.amazonaws.com:3003/api/transactions/add',
         {
           method: 'POST',
           headers: {
