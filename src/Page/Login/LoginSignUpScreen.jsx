@@ -26,7 +26,7 @@ const LoginSignUpScreen = () => {
     const { email, password } = formData;
     try {
       const response = await fetch(
-        'http://ec2-34-229-209-174.compute-1.amazonaws.com:3003/api/auth/login',
+        'https://api.tkglisting.com/api/auth/login',
         {
           method: 'POST',
           headers: {
@@ -60,7 +60,7 @@ const LoginSignUpScreen = () => {
 
     try {
       const response = await fetch(
-        'http://ec2-34-229-209-174.compute-1.amazonaws.com:3003/api/auth/signup',
+        'https://api.tkglisting.com/api/auth/signup',
         {
           method: 'POST',
           headers: {

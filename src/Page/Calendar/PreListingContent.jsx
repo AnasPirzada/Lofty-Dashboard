@@ -25,7 +25,7 @@ export const PreListingContent = () => {
   // Fetch tasks from the API
   const fetchTasks = async () => {
     try {
-      const response = await fetch('http://ec2-34-229-209-174.compute-1.amazonaws.com:3003/api/tasks');
+      const response = await fetch('https://api.tkglisting.com/api/tasks');
       const data = await response.json();
 
       // Assuming data contains an array of tasks, update state

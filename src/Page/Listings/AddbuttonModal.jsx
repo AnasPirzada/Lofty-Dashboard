@@ -281,7 +281,7 @@ const TransactionForm = ({ closeModal }) => {
 
     try {
       const response = await fetch(
-        'http://ec2-34-229-209-174.compute-1.amazonaws.com:3003/api/transactions/add',
+        'https://api.tkglisting.com/api/transactions/add',
         {
           method: 'POST',
           headers: {
