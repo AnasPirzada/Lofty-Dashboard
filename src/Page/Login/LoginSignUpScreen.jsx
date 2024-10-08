@@ -25,13 +25,16 @@ const LoginSignUpScreen = () => {
   const handleLogin = async () => {
     const { email, password } = formData;
     try {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        'http://ec2-34-229-209-174.compute-1.amazonaws.com:3003/api/auth/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await response.json();
 
@@ -56,13 +59,16 @@ const LoginSignUpScreen = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, email, password, confirmPassword }),
-      });
+      const response = await fetch(
+        'http://ec2-34-229-209-174.compute-1.amazonaws.com:3003/api/auth/signup',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, email, password, confirmPassword }),
+        }
+      );
 
       const data = await response.json();
 
