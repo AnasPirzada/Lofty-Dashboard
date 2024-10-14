@@ -13,8 +13,8 @@ const stepName = [
   'Pre-Listing',
   'Active Listing',
   'Under Contract',
-  'Pending',
-  'Closed/Cancelled',
+  // 'Pending',
+  // 'Closed/Cancelled',
 ];
 
 const Stepper = ({ selectedOption }) => {

@@ -52,19 +52,23 @@ const TableWithToolbar = () => {
   const fetchTransactions = async () => {
     try {
       const response = await fetch(
-        'http://ec2-34-229-209-174.compute-1.amazonaws.com:3003/api/transactions'
+        'https://api.tkglisting.com/api/transactions'
       );
+      console.log(response);
+
       const data = await response.json();
+      console.log();
+      toast.success(data.message);
 
       // Map the required fields from the response
-      const mappedData = data.map(transaction => ({
-        state_id: transaction.state_id, // Property Address
+      const mappedData = data.transactions.map(transaction => ({
+        state_id: transaction.state, // Property Address
         created_by: transaction.created_by, // Client Name
-        task_status: transaction.task_status, // Tasks
+        task_status: transaction.task_status || 'Open', // Tasks
         expectedClose: transaction.expectedClose || null, // Expected Close Date, show N/A if null
-        sale_price: transaction.sale_price, // Sale Price
+        list_price: transaction.list_price, // Sale Price
         transactionOwner: transaction.transactionOwner, // Original fields
-        stage: mapStage(transaction.stage_id), // Map stage_id to readable form
+        stage_id: mapStage(Number(transaction.stage_id)), // Map stage_id to readable form
         closedDate: transaction.closedDate,
       }));
 
@@ -75,8 +79,8 @@ const TableWithToolbar = () => {
     }
   };
 
-  const mapStage = stageId => {
-    switch (stageId) {
+  const mapStage = stage_id => {
+    switch (stage_id) {
       case 1:
         return 'Pre Listing';
       case 2:
@@ -153,7 +157,7 @@ const TableWithToolbar = () => {
                   <td className='px-4 py-2 text-gray-600'>{row.state_id}</td>
                   <td className='px-4 py-2 text-gray-600'>{row.created_by}</td>
                   <td className='px-4 py-2 text-gray-600'>{row.task_status}</td>
-                  <td className='px-4 py-2 text-gray-600'>{row.stage}</td>
+                  <td className='px-4 py-2 text-gray-600'>{row.stage_id}</td>
                   <td className='px-4 py-2 text-gray-600 flex justify-start items-center'>
                     {row.expectedClose ? (
                       row.expectedClose
@@ -195,33 +199,32 @@ const TableWithToolbar = () => {
                       onChange={e => handleDateChange(e.target.value, index)}
                     />
                   </td>
-                  <td className='px-4 py-2 text-gray-600'>${row.sale_price}</td>
+                  <td className='px-4 py-2 text-gray-600'>${row.list_price}</td>
                 </motion.tr>
               ))}
             </tbody>
           </motion.table>
         </div>
-
-        {/* Pagination Controls */}
-        <div className='flex justify-between items-center mt-2'>
-          <button
-            onClick={() => setCurrentPage(currentPage - 1)}
-            className='px-4 py-2 bg-gray-300 rounded hover:bg-gray-400'
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-          <div>
-            Page {currentPage} of {totalPages}
-          </div>
-          <button
-            onClick={() => setCurrentPage(currentPage + 1)}
-            className='px-4 py-2 bg-gray-300 rounded hover:bg-gray-400'
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
+      </div>
+      {/* Pagination Controls */}
+      <div className='flex justify-between items-center my-2'>
+        <button
+          onClick={() => setCurrentPage(currentPage - 1)}
+          className='px-4 py-2 bg-gray-300 rounded hover:bg-gray-400'
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <div>
+          Page {currentPage} of {totalPages}
         </div>
+        <button
+          onClick={() => setCurrentPage(currentPage + 1)}
+          className='px-4 py-2 bg-gray-300 rounded hover:bg-gray-400'
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
