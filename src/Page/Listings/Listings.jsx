@@ -9,57 +9,57 @@ import Table from './Table.jsx';
 const Listings = () => {
   const [activeTab, setActiveTab] = useState('Listing'); // Set Listing as the initial active tab
 
-  const tabs = ['All', 'Purchase', 'Listing', 'Lease', 'Referals', 'Other']; // Tab items
+  const tabs = ['Listing']; // Tab items
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'All':
-        return (
-          <div>
-            {' '}
-            <div>
-              <ListingsSection />
-            </div>
-          </div>
-        );
-      case 'Purchase':
-        return (
-          <div>
-            <div>
-              <ListingsSection />
-            </div>
-          </div>
-        );
+      // case 'All':
+      //   return (
+      //     <div>
+      //       {' '}
+      //       <div>
+      //         <ListingsSection />
+      //       </div>
+      //     </div>
+      //   );
+      // case 'Purchase':
+      //   return (
+      //     <div>
+      //       <div>
+      //         <ListingsSection />
+      //       </div>
+      //     </div>
+      //   );
       case 'Listing':
         return (
           <div>
             <ListingsSection />
           </div>
         );
-      case 'Lease':
-        return (
-          <div>
-            <div>
-              <ListingsSection />
-            </div>
-          </div>
-        );
-      case 'Referals':
-        return (
-          <div>
-            <div>
-              <ListingsSection />
-            </div>
-          </div>
-        );
-      case 'Other':
-        return (
-          <div>
-            <div>
-              <ListingsSection />
-            </div>
-          </div>
-        );
+      // case 'Lease':
+      //   return (
+      //     <div>
+      //       <div>
+      //         <ListingsSection />
+      //       </div>
+      //     </div>
+      //   );
+      // case 'Referals':
+      //   return (
+      //     <div>
+      //       <div>
+      //         <ListingsSection />
+      //       </div>
+      //     </div>
+      //   );
+      // case 'Other':
+      //   return (
+      //     <div>
+      //       <div>
+      //         <ListingsSection />
+      //       </div>
+      //     </div>
+      //   );
       default:
         return null;
     }
