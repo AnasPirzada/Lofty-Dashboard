@@ -36,10 +36,14 @@ const LoginSignUpScreen = () => {
         }
       );
 
+      console.log(response);
+
       const data = await response.json();
+      console.log(data);
 
       if (response.ok) {
         toast.success('Login successful!');
+        localStorage.setItem('user', JSON.stringify(data.user));
         navigate('/Transactions'); // Redirect to Transactions on success
       } else {
         throw new Error(data.message || 'Login failed');

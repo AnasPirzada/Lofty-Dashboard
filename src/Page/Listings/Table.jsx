@@ -63,7 +63,15 @@ const TableWithToolbar = () => {
       // Map the required fields from the response
       const mappedData = data.transactions.map(transaction => ({
         state_id: transaction.state, // Property Address
+        address1: transaction.address1, // Property Address
+        address2: transaction.address2, // Property Address
+        city: transaction.city, // Property Address
+        state: transaction.state, // Property Address
+
         created_by: transaction.created_by, // Client Name
+        first_name: transaction.first_name, // Client Name
+        last_name: transaction.last_name, // Client Name
+
         task_status: transaction.task_status || 'Open', // Tasks
         expectedClose: transaction.expectedClose || null, // Expected Close Date, show N/A if null
         list_price: transaction.list_price, // Sale Price
@@ -132,11 +140,9 @@ const TableWithToolbar = () => {
             <thead>
               <tr className='bg-white text-nowrap'>
                 <th className='px-4 py-2 text-left text-gray-700'>
-                  Property Address
+                  Transaction Name
                 </th>
-                <th className='px-4 py-2 text-left text-gray-700'>
-                  Client Name
-                </th>
+                <th className='px-4 py-2 text-left text-gray-700'>Lead</th>
                 <th className='px-4 py-2 text-left text-gray-700'>Task</th>
                 <th className='px-4 py-2 text-left text-gray-700'>Stage</th>
                 <th className='px-4 py-2 text-left text-gray-700'>
@@ -154,8 +160,12 @@ const TableWithToolbar = () => {
                   whileHover={{ scale: 1.02 }}
                   className='border-b text-nowrap hover:bg-gray-50'
                 >
-                  <td className='px-4 py-2 text-gray-600'>{row.state_id}</td>
-                  <td className='px-4 py-2 text-gray-600'>{row.created_by}</td>
+                  <td className='px-4 py-2 text-gray-600'>
+                    {row.address1} {row.address2} {row.city} {row.state}
+                  </td>
+                  <td className='px-4 py-2 text-gray-600'>
+                    {row.first_name} {row.last_name}
+                  </td>
                   <td className='px-4 py-2 text-gray-600'>{row.task_status}</td>
                   <td className='px-4 py-2 text-gray-600'>{row.stage_id}</td>
                   <td className='px-4 py-2 text-gray-600 flex justify-start items-center'>

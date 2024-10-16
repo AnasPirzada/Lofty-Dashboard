@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Function to map stage_id to stage name
 const mapStage = stage_id => {
   switch (stage_id) {
     case 1:
@@ -23,15 +22,22 @@ const TransactionForm = ({ closeModal }) => {
   const [address1, setAddress1] = useState('');
   const [address2, setAddress2] = useState('');
   const [city, setCity] = useState('');
-  const [state, setState] = useState('');
   const [zip, setZip] = useState('');
   const [listPrice, setListPrice] = useState('');
   const [stage_id, setStageId] = useState(''); // Store stage_id
-  const [createdBy, setCreatedBy] = useState('');
+  const [createdBy, setCreatedBy] = useState(''); // Editable createdBy field
+  const [state, setState] = useState('IL'); // Default state set to 'IL'
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Retrieve user data from local storage
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser && storedUser.username) {
+      setCreatedBy(storedUser.username); // Set createdBy to the stored username
+    }
+  }, []);
+
   const handleSave = async () => {
-    // Validate required fields
     if (
       !firstName ||
       !lastName ||
@@ -44,20 +50,6 @@ const TransactionForm = ({ closeModal }) => {
       !createdBy
     ) {
       toast.error('Please fill out all required fields.', {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      return;
-    }
-
-    // Validate state field
-    if (state.length !== 2) {
-      toast.error('State must be exactly 2 characters (e.g., IL)', {
         position: 'top-right',
         autoClose: 3000,
         hideProgressBar: false,
@@ -106,11 +98,8 @@ const TransactionForm = ({ closeModal }) => {
           draggable: true,
           progress: undefined,
         });
-        console.log('Saved Data:', responseData);
         navigate('/StepperSection');
       } else {
-        console.log(response);
-
         throw new Error('Failed to save transaction');
       }
     } catch (error) {
@@ -123,7 +112,6 @@ const TransactionForm = ({ closeModal }) => {
         draggable: true,
         progress: undefined,
       });
-      console.error('Error saving data:', error);
     }
   };
 
@@ -197,17 +185,18 @@ const TransactionForm = ({ closeModal }) => {
         />
       </div>
 
-      {/* State */}
+      {/* State Dropdown */}
       <div className='mb-4'>
         <label className='block text-sm font-medium text-gray-700 mb-1'>
           State *
         </label>
-        <input
-          type='text'
+        <select
           value={state}
           onChange={e => setState(e.target.value)}
           className='w-full px-4 py-2 border border-gray-300 rounded-md'
-        />
+        >
+          <option value='IL'>IL</option>
+        </select>
       </div>
 
       {/* Zip */}
@@ -253,14 +242,15 @@ const TransactionForm = ({ closeModal }) => {
         </select>
       </div>
 
-      {/* Created By */}
+      {/* Client Name*/}
       <div className='mb-4'>
         <label className='block text-sm font-medium text-gray-700 mb-1'>
-          Created By *
+          Client Name *
         </label>
         <input
           type='text'
           value={createdBy}
+          disabled
           onChange={e => setCreatedBy(e.target.value)}
           className='w-full px-4 py-2 border border-gray-300 rounded-md'
         />
@@ -275,7 +265,7 @@ const TransactionForm = ({ closeModal }) => {
           Cancel
         </button>
         <button
-          className='px-4 py-2 text-white bg-gray-700 rounded-md'
+          className='px-4 py-2 text-white bg-blue-500 rounded-lg'
           onClick={handleSave}
         >
           Save
