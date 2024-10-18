@@ -17,7 +17,7 @@ const stepName = [
   // 'Closed/Cancelled',
 ];
 
-const Stepper = ({ selectedOption }) => {
+const Stepper = ({ selectedOption, transactionId, createdBy, state }) => {
   // Track global completion state for all steps
   const [stepsCompletion, setStepsCompletion] = useState(
     stepName.map(() => false) // Initialize all steps as incomplete (false)
@@ -73,15 +73,29 @@ const Stepper = ({ selectedOption }) => {
     }
   };
 
+  console.log('in steper', transactionId);
+
   // Render the content based on the selected option
   const renderStepContent = () => {
     switch (selectedOption) {
       case 'Dates':
-        return <DatesContent currentStep={currentStep} />;
+        return (
+          <DatesContent
+            currentStep={currentStep}
+            createdBy={createdBy}
+            state={state}
+          />
+        );
       case 'Property':
         return <PropertyContent currentStep={currentStep} />;
       case 'Checklists':
-        return <ChecklistsContent currentStep={currentStep} />;
+        return (
+          <ChecklistsContent
+            currentStep={currentStep}
+            transactionId={transactionId}
+            // setTaskCounts={setTaskCounts}
+          />
+        );
       case 'Accounting':
         return <AccountingContent currentStep={currentStep} />;
       case 'Contacts':

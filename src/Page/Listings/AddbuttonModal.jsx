@@ -27,6 +27,7 @@ const TransactionForm = ({ closeModal }) => {
   const [stage_id, setStageId] = useState(''); // Store stage_id
   const [createdBy, setCreatedBy] = useState(''); // Editable createdBy field
   const [state, setState] = useState('IL'); // Default state set to 'IL'
+  const [states, setStates] = useState([]); // State for the list of states
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,6 +36,32 @@ const TransactionForm = ({ closeModal }) => {
     if (storedUser && storedUser.username) {
       setCreatedBy(storedUser.username); // Set createdBy to the stored username
     }
+
+    // Fetch states from the API
+    const fetchStates = async () => {
+      try {
+        const response = await fetch(
+          'https://api.tkglisting.com/api/states/all'
+        );
+        if (!response.ok) {
+          throw new Error('Failed to fetch states');
+        }
+        const data = await response.json();
+        setStates(data.states); // Set the states from the response
+      } catch (error) {
+        toast.error('Error fetching states. Please try again.', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    };
+
+    fetchStates();
   }, []);
 
   const handleSave = async () => {
@@ -87,8 +114,12 @@ const TransactionForm = ({ closeModal }) => {
         }
       );
 
+      console.log(response);
+
       if (response.ok) {
         const responseData = await response.json();
+        console.log(responseData.transaction_id);
+        const transactionId = responseData.transaction_id;
         toast.success('Transaction saved successfully!', {
           position: 'top-right',
           autoClose: 3000,
@@ -98,7 +129,9 @@ const TransactionForm = ({ closeModal }) => {
           draggable: true,
           progress: undefined,
         });
-        navigate('/StepperSection');
+        navigate('/StepperSection', {
+          state: { transactionId, createdBy, state },
+        });
       } else {
         throw new Error('Failed to save transaction');
       }
@@ -195,7 +228,11 @@ const TransactionForm = ({ closeModal }) => {
           onChange={e => setState(e.target.value)}
           className='w-full px-4 py-2 border border-gray-300 rounded-md'
         >
-          <option value='IL'>IL</option>
+          {states.map(stateItem => (
+            <option key={stateItem.state} value={stateItem.state}>
+              {stateItem.state}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -242,35 +279,18 @@ const TransactionForm = ({ closeModal }) => {
         </select>
       </div>
 
-      {/* Client Name*/}
-      <div className='mb-4'>
-        <label className='block text-sm font-medium text-gray-700 mb-1'>
-          Client Name *
-        </label>
-        <input
-          type='text'
-          value={createdBy}
-          disabled
-          onChange={e => setCreatedBy(e.target.value)}
-          className='w-full px-4 py-2 border border-gray-300 rounded-md'
-        />
-      </div>
-
-      {/* Action Buttons */}
-      <div className='flex justify-end mt-4'>
-        <button
-          className='px-4 py-2 text-gray-600 rounded-lg bg-gray-200 mr-2'
-          onClick={closeModal}
-        >
-          Cancel
-        </button>
-        <button
-          className='px-4 py-2 text-white bg-blue-500 rounded-lg'
-          onClick={handleSave}
-        >
-          Save
-        </button>
-      </div>
+      <button
+        onClick={handleSave}
+        className='w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded'
+      >
+        Save
+      </button>
+      <button
+        onClick={closeModal}
+        className='w-full mt-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded'
+      >
+        Cancel
+      </button>
     </div>
   );
 };

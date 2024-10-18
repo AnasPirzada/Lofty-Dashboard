@@ -1,255 +1,156 @@
-// StepperContent/ChecklistsContent.js
-import { useState } from 'react';
-import ActiveListingContent from '../../../Components/ActiveListingContent.jsx';
-import ChecklistTemplateModal from '../../../Components/checklistTemplateModal.jsx';
-import PreListingContent from '../../../Components/PreListingContent.jsx';
-import UnderContractContent from '../../../Components/UnderContractContent.jsx';
-const ChecklistsContent = ({ currentStep }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [checklistApplied, setChecklistApplied] = useState(false); // Track if a checklist is applied
-  const [selectedChecklistData, setSelectedChecklistData] = useState(null); // Store the selected checklist data
-  const tasks = [
-    {
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do',
-      assignedInitials: 'ips',
-      assignedName: 'ipsum dolor',
-    },
-    {
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do',
-      assignedInitials: 'it',
-      assignedName: 'ipsum dolor',
-    },
-  ];
+import React, { useEffect, useState } from 'react';
 
-  const [activeTab, setActiveTab] = useState('preListing');
+const ChecklistsContent = ({
+  currentStep, // Step indicator passed to the component
+  transactionId, // Transaction ID passed to the component
+  setTaskCounts,
+}) => {
+  const [stages, setStages] = useState([]); // Store stages data
+  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [loadingTaskId, setLoadingTaskId] = useState(null); // Task loading state (for API request loading)
 
-  return (
-    <div>
-      {currentStep === 0 && (
-        // <>
-        //   <div className='flex justify-end items-center'>
-        //     <button className='bg-[#3951BA] py-1 drop-shadow-lg flex mt-4 me-4 text-white px-6 rounded-lg'>
-        //       Action{' '}
-        //       <img src='/downwhite.svg' className='w-7 h-7 ms-4' alt='' />
-        //     </button>
-        //   </div>
+  // Function to fetch checklist data
+  const fetchData = async () => {
+    setIsLoading(true); // Start loading
+    try {
+      const response = await fetch(
+        `https://api.tkglisting.com/api/transactions/${transactionId}/details`
+      );
+      const data = await response.json();
+      console.log('Fetched Stages:', data.stages); // Check the data structure
+      setStages(data.stages); // Set the stages from API response
+      setIsLoading(false); // Set loading to false after data is fetched
+    } catch (error) {
+      console.error('Error fetching checklist data:', error);
+      setIsLoading(false); // Set loading to false on error as well
+    }
+  };
 
-        //   <div className='flex flex-col mt-40 justify-center items-center'>
-        //     <img src='/checklist-svgrepo-com.svg' className='w-7 h-7' alt='' />
-        //     <p>No Check list template has been applied</p>
-        //   </div>
+  // Function to handle task status change (now includes stage_id)
+  const handleCheckboxChange = async (taskId, taskStatus, stageId) => {
+    if (loadingTaskId === taskId) return; // Prevent multiple clicks on the same task
 
-        //   <div className='grid flex-col mt-10 justify-center items-center grid-cols-12'>
-        //     <div className='grid col-span-3'></div>
+    setLoadingTaskId(taskId); // Set task loading ID to block multiple clicks
 
-        //     <div className='grid col-span-6'>
-        //       <button className='bg-[#3951BA] text-white py-2 w-full rounded-lg'>
-        //         Add an individual Task
-        //       </button>
-        //     </div>
-        //     <div className='grid col-span-3'></div>
-        //   </div>
+    const updatedStatus = taskStatus === 'Completed' ? 'Open' : 'Completed'; // Toggle task status
 
-        //   <div className='grid grid-cols-12 mt-4'>
-        //     <div className='grid col-span-3'></div>
-        //     <div className='grid col-span-6'>
-        //       <button
-        //         className='bg-[#3951BA] text-white py-2 w-full rounded-lg'
-        //         onClick={() => setIsOpen(true)}
-        //       >
-        //         Apply a checklist Template
-        //       </button>
-        //     </div>
-        //     <div className='grid col-span-3'></div>
-        //   </div>
-        //   <ChecklistTemplateModal isOpen={isOpen} setIsOpen={setIsOpen} />
-        // </>
-        <div>
-          {/* Conditionally render content based on whether a checklist is applied */}
-          {!checklistApplied ? (
-            <>
-              <div className='flex justify-end items-center'>
-                <button className='bg-[#616161] py-1 drop-shadow-lg flex mt-4 me-4 text-white px-6 rounded-lg'>
-                  Action{' '}
-                  <img src='/downwhite.svg' className='w-7 h-7 ms-4' alt='' />
-                </button>
-              </div>
+    // Save task status in local storage
+    const taskDetails = {
+      task_id: taskId,
+      task_status: updatedStatus,
+      transaction_id: transactionId,
+      stage_id: stageId, // Include stage_id here
+    };
+    localStorage.setItem(`task_${taskId}`, JSON.stringify(taskDetails));
 
-              <div className='flex flex-col mt-40 justify-center items-center'>
-                <img
-                  src='/checklist-svgrepo-com.svg'
-                  className='w-7 h-7'
-                  alt=''
-                />
-                <p>No Check list template has been applied</p>
-              </div>
+    try {
+      const response = await fetch(
+        `https://api.tkglisting.com/api/transactions/${taskId}/status`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            transaction_id: transactionId,
+            task_status: updatedStatus,
+            stage_id: stageId, // Send stage_id in the request body
+          }),
+        }
+      );
 
-              <div className='grid flex-col mt-10 justify-center items-center grid-cols-12'>
-                <div className='grid col-span-3'></div>
-                <div className='grid col-span-6'>
-                  <button className='bg-[#616161] text-white py-2 w-full rounded-lg'>
-                    Add an individual Task
-                  </button>
-                </div>
-                <div className='grid col-span-3'></div>
-              </div>
+      if (response.ok) {
+        console.log(
+          `Task ${taskId} in stage ${stageId} status updated to ${updatedStatus}`
+        );
+        await fetchData(); // Refresh data after status change
 
-              <div className='grid grid-cols-12 mt-4'>
-                <div className='grid col-span-3'></div>
-                <div className='grid col-span-6'>
-                  <button
-                    className='bg-[#616161] text-white py-2 w-full rounded-lg'
-                    onClick={() => setIsOpen(true)}
-                  >
-                    Apply a checklist Template
-                  </button>
-                </div>
-                <div className='grid col-span-3'></div>
-              </div>
+        const apiData = await response.json();
+        setTaskCounts({
+          completedTaskCount: apiData.completed_tasks,
+          totalTaskCount: apiData.total_tasks,
+          openTaskCount: apiData.total_tasks - apiData.completed_tasks,
+        });
+      } else {
+        console.error('Failed to update task status');
+      }
+    } catch (error) {
+      console.error('Error updating task status:', error);
+    } finally {
+      setLoadingTaskId(null); // Clear the task loading state
+    }
+  };
 
-              <ChecklistTemplateModal
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                setChecklistApplied={setChecklistApplied} // Pass state updater to modal
-                setSelectedChecklistData={setSelectedChecklistData}
-              />
-            </>
-          ) : (
-            <>
-              <div className='flex justify-between items-center px-4  border-b'>
-                <h2 className='text-lg border-b-2 border-b-[#9094A5] pb-1 font-semibold text-gray-800'>
-                  Pre-Listing
-                </h2>
-                <button className='bg-[#9094A5] py-1 drop-shadow-lg mb-2 flex mt-4 me-4 text-white px-6 rounded-lg'>
-                  Action{' '}
-                  <img src='/downwhite.svg' className='w-7 h-7 ms-4' alt='' />
-                </button>
-              </div>
-              <div>
-                {tasks.map((task, index) => (
-                  <div
-                    key={index}
-                    className='flex items-center justify-between p-4 border-b'
-                  >
-                    <div className='flex items-center'>
+  useEffect(() => {
+    fetchData(); // Fetch checklist data when the component mounts or transactionId changes
+  }, [transactionId]);
+
+  if (isLoading) {
+    return (
+      <div className='flex justify-center items-center h-48'>
+        <div className='animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500'></div>
+        <span className='ml-4 text-blue-500 font-semibold'>
+          Loading checklist...
+        </span>
+      </div>
+    );
+  }
+
+  if (!stages.length) {
+    return <div>No checklist data available.</div>;
+  }
+
+  // Render tasks for each stage
+  const renderStageContent = stage => (
+    <div key={stage.stage_id} className={`stage-${stage.stage_id}`}>
+      <h2 className='text center p-2 text-blue-500'>Please Select the dates first</h2>
+      <form>
+        <div className='form-group'>
+          <table className='min-w-full bg-white'>
+            <thead>
+              <tr>
+                <th className='py-2 px-4 border-b'>Status</th>
+                <th className='py-2 px-4 border-b'>Task Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {stage.tasks.map(task => (
+                <tr key={task.task_id}>
+                  <td className='py-2 px-4 border-b'>
+                    <label className='flex items-center space-x-2'>
                       <input
                         type='checkbox'
-                        className='form-checkbox h-5 w-5 text-[#9094A5]'
+                        checked={task.task_status === 'Completed'}
+                        disabled={loadingTaskId === task.task_id} // Disable checkbox while API is processing
+                        onChange={() =>
+                          handleCheckboxChange(
+                            task.task_id,
+                            task.task_status,
+                            stage.stage_id // Pass stage_id to the handler
+                          )
+                        }
+                        className='form-checkbox h-5 w-5 text-blue-600'
                       />
-                      <span className='ml-3 text-gray-800'>
-                        {task.description}
-                      </span>
-                    </div>
-                    <div className='flex items-center space-x-2'>
-                      <div className='bg-[#9094A5] text-white w-8 h-8 flex items-center justify-center rounded-full'>
-                        {task.assignedInitials}
-                      </div>
-                      <span className='text-gray-600'>{task.assignedName}</span>
-                      <img
-                        src='/right-arrow-backup-2-svgrepo-com.svg'
-                        className='w-4 h-4'
-                        alt=''
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
+                      {loadingTaskId === task.task_id && (
+                        <div className='animate-spin rounded-full h-4 w-4 border-t-2 border-blue-600'></div>
+                      )}
+                    </label>
+                  </td>
+                  <td className='py-2 px-4 border-b'>{task.task_name}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
+      </form>
+    </div>
+  );
 
-      {currentStep === 1 && (
-        <div>
-          <div className='grid grid-cols-12'>
-            <div className='grid col-span-6 md:col-span-3 '>
-              <button
-                className={`px-4 py-2 font-semibold ${
-                  activeTab === 'preListing'
-                    ? 'border-b-2 border-[#9094A5] text-[#E0E0E0]'
-                    : 'text-gray-500'
-                }`}
-                onClick={() => setActiveTab('preListing')}
-              >
-                Pre-Listing
-              </button>
-            </div>
-            <div className='grid col-span-6 md:col-span-3'>
-              <button
-                className={`px-4 py-2 font-semibold ${
-                  activeTab === 'activeListing'
-                    ? 'border-b-2 border-[#9094A5] text-[#E0E0E0]'
-                    : 'text-gray-500'
-                }`}
-                onClick={() => setActiveTab('activeListing')}
-              >
-                Active Listing
-              </button>
-            </div>
-          </div>
-
-          <div className=' mt-4 flex items-center overflow-x-hidden justify-start ms-5'>
-            {/* Tab Content */}
-            <div className='w-full'>
-              {activeTab === 'preListing' && <PreListingContent />}
-              {activeTab === 'activeListing' && <ActiveListingContent />}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {currentStep === 2 && (
-        <div>
-          <div className='grid grid-cols-12'>
-            <div className='grid col-span-4 md:col-span-3 '>
-              <button
-                className={`px-4 py-2 font-semibold ${
-                  activeTab === 'preListing'
-                    ? 'border-b-2 border-[#9094A5] text-[#E0E0E0]'
-                    : 'text-gray-500'
-                }`}
-                onClick={() => setActiveTab('preListing')}
-              >
-                Pre-Listing
-              </button>
-            </div>
-            <div className='grid col-span-4 md:col-span-3'>
-              <button
-                className={`px-4 py-2 font-semibold text-nowrap ${
-                  activeTab === 'activeListing'
-                    ? 'border-b-2 border-[#9094A5] text-[#E0E0E0]'
-                    : 'text-gray-500'
-                }`}
-                onClick={() => setActiveTab('activeListing')}
-              >
-                Active Listing
-              </button>
-            </div>{' '}
-            <div className='grid col-span-4 md:col-span-3'>
-              <button
-                className={`px-4 py-2 font-semibold text-nowrap ${
-                  activeTab === 'UnderContract'
-                    ? 'border-b-2 border-[#9094A5]  text-[#E0E0E0]'
-                    : 'text-gray-500'
-                }`}
-                onClick={() => setActiveTab('UnderContract')}
-              >
-                Under Contract{' '}
-              </button>
-            </div>
-          </div>
-
-          <div className=' mt-4 flex items-center overflow-x-hidden justify-start ms-5'>
-            {/* Tab Content */}
-            <div className='w-full'>
-              {activeTab === 'preListing' && <PreListingContent />}
-              {activeTab === 'activeListing' && <ActiveListingContent />}
-              {activeTab === 'UnderContract' && <UnderContractContent />}
-            </div>
-          </div>
-        </div>
+  // Map currentStep to stage based on stage_id (1-based index)
+  return (
+    <div>
+      {stages.map(
+        stage => stage.stage_id === currentStep + 1 && renderStageContent(stage)
       )}
     </div>
   );

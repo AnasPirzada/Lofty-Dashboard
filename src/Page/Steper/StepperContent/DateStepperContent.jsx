@@ -1,89 +1,8 @@
-// import React, { useState } from 'react';
-// import DatePicker from 'react-datepicker';
-// import 'react-datepicker/dist/react-datepicker.css';
-
-// const DateFields = () => {
-//   const dateFields = [
-//     { name: 'Expected Close' },
-//     { name: 'Appointment Date' },
-//     { name: 'Agreement Signed Date' },
-//     { name: 'Contract Date' },
-//     { name: 'Appraisal Date' },
-//     { name: 'Home Inspection Date' },
-//     { name: 'Escrow Date' },
-//     { name: 'Expiration Date' },
-//     { name: 'Open House' },
-//     { name: 'Termination Day' },
-//     { name: 'Day Referred Out' },
-//     { name: 'Price Reduction' },
-//     { name: 'Buyer Token' },
-//     { name: 'Listing Date' },
-//   ];
-
-//   const [selectedDates, setSelectedDates] = useState(
-//     Array(dateFields.length).fill(null)
-//   );
-
-//   const [openPickerIndex, setOpenPickerIndex] = useState(null);
-
-//   const handleDateChange = (date, index) => {
-//     const newDates = [...selectedDates];
-//     newDates[index] = date;
-//     setSelectedDates(newDates);
-//     setOpenPickerIndex(null);
-//   };
-
-//   return (
-//     <div className='grid grid-cols-12 gap-4'>
-//       {' '}
-//       {/* Create a 12-column grid layout */}
-//       {dateFields.map((field, index) => (
-//         <React.Fragment key={index}>
-//           <div className='col-span-12 md:col-span-3 p-4'>
-//             {' '}
-//             {/* Field Name: 12 on mobile, 3 on larger screens */}
-//             <p>{field.name}</p>
-//           </div>
-//           <div className='col-span-12 md:col-span-9 p-4'>
-//             {' '}
-//             {/* Calendar: 12 on mobile, 9 on larger screens */}
-//             <div className='border rounded-lg p-2 flex items-center relative'>
-//               <img
-//                 src='/calender-svgrepo-com.svg'
-//                 className='w-4 h-4 cursor-pointer'
-//                 alt='Calendar Icon'
-//                 onClick={() => setOpenPickerIndex(index)}
-//               />
-//               <p className='font-normal text-lg ms-4'>
-//                 {selectedDates[index]
-//                   ? selectedDates[index].toLocaleDateString()
-//                   : 'N/A'}
-//               </p>
-//               {openPickerIndex === index && (
-//                 <div className='absolute top-full left-0 z-10'>
-//                   <DatePicker
-//                     selected={selectedDates[index]}
-//                     onChange={date => handleDateChange(date, index)}
-//                     inline
-//                   />
-//                 </div>
-//               )}
-//             </div>
-//           </div>
-//         </React.Fragment>
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default DateFields;
-
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const DateFields = () => {
-  // State to store the date fields from the API response
+const DateFields = ({ transactionId, createdBy, state }) => {
   const [dateFields, setDateFields] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
   const [openPickerIndex, setOpenPickerIndex] = useState(null);
@@ -94,10 +13,9 @@ const DateFields = () => {
       try {
         const response = await fetch(
           'https://api.tkglisting.com/api/transactions/dates'
-        ); // Replace with your base URL
+        );
         const data = await response.json();
 
-        // Filter only the dates you're interested in (if needed)
         const filteredDates = data.map(dateField => ({
           name: dateField.date_name,
           created_date: new Date(dateField.created_date),
@@ -121,6 +39,51 @@ const DateFields = () => {
     setOpenPickerIndex(null);
   };
 
+  // Function to handle API call to add dates
+  const handleAddDates = async () => {
+    const datesToAdd = selectedDates
+      .map((date, index) => ({
+        date_name: dateFields[index]?.name,
+        date_value: date ? date.toISOString().split('T')[0] : null,
+      }))
+      .filter(date => date.date_value); // Filter out invalid dates
+
+    const body = {
+      created_by: createdBy, // Existing variable
+      transaction_id: transactionId, // Add this variable
+      state_id: 'IL', // Add this variable
+      stage_id: 7, // Example value, can be dynamic based on your logic
+      dates: datesToAdd,
+    };
+
+    console.log('Request Body:', JSON.stringify(body, null, 2));
+
+    try {
+      const response = await fetch('https://api.tkglisting.com/api/dates/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+      console.log(response);
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Dates added successfully:', result);
+      } else {
+        const errorResponse = await response.json();
+        console.error(
+          'Error adding dates:',
+          response.statusText,
+          errorResponse
+        );
+      }
+    } catch (error) {
+      console.error('Network error while adding dates:', error);
+    }
+  };
+
   return (
     <div className='grid grid-cols-12 gap-4'>
       {dateFields.map((field, index) => (
@@ -135,6 +98,7 @@ const DateFields = () => {
                 className='w-4 h-4 cursor-pointer'
                 alt='Calendar Icon'
                 onClick={() => setOpenPickerIndex(index)}
+                style={{ touchAction: 'manipulation' }} // Touch action for mobile
               />
               <p className='font-normal text-lg ms-4'>
                 {selectedDates[index]
@@ -147,6 +111,14 @@ const DateFields = () => {
                     selected={selectedDates[index]}
                     onChange={date => handleDateChange(date, index)}
                     inline
+                    calendarClassName='custom-calendar' // Optional custom styling
+                    popperPlacement='bottom' // Positioning the calendar
+                    popperModifiers={{
+                      offset: {
+                        enabled: true,
+                        offset: '0, 10',
+                      },
+                    }}
                   />
                 </div>
               )}
@@ -154,6 +126,14 @@ const DateFields = () => {
           </div>
         </React.Fragment>
       ))}
+      <div className='col-span-12 text-center mt-4'>
+        <button
+          onClick={handleAddDates}
+          className='btn  text-white rounded-lg bg-blue-500 py-3 px-7 my-6  btn-primary'
+        >
+          Add Dates
+        </button>
+      </div>
     </div>
   );
 };
