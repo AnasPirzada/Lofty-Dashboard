@@ -8,7 +8,8 @@ const ChecklistsContent = ({
   const [stages, setStages] = useState([]); // Store stages data
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const [loadingTaskId, setLoadingTaskId] = useState(null); // Task loading state (for API request loading)
-
+  console.log('checksurrent', currentStep);
+  console.log('checktrans', transactionId);
   // Function to fetch checklist data
   const fetchData = async () => {
     setIsLoading(true); // Start loading
@@ -96,14 +97,13 @@ const ChecklistsContent = ({
     );
   }
 
-  if (!stages.length) {
+  if (!stages?.length) {
     return <div>No checklist data available.</div>;
   }
 
   // Render tasks for each stage
   const renderStageContent = stage => (
     <div key={stage.stage_id} className={`stage-${stage.stage_id}`}>
-      <h2 className='text center p-2 text-blue-500'>Please Select the dates first</h2>
       <form>
         <div className='form-group'>
           <table className='min-w-full bg-white'>

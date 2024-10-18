@@ -15,6 +15,7 @@ const Stepper = ({
   createdBy,
   state,
   setSelectedOption,
+  transactionsId,
 }) => {
   const [steps, setSteps] = useState([]); // Store steps from API
   const [currentStep, setCurrentStep] = useState(0); // Track current step
@@ -22,6 +23,7 @@ const Stepper = ({
   const [nextStep, setNextStep] = useState(null); // Track the step to move to after confirmation
   const [stepsCompletion, setStepsCompletion] = useState([]); // Track completion state
   const [loading, setLoading] = useState(true); // Track loading state
+  console.log(transactionsId);
 
   // Fetch stages from API
   useEffect(() => {
@@ -101,7 +103,7 @@ const Stepper = ({
             currentStep={currentStep}
             createdBy={createdBy}
             state={state}
-            transactionId={transactionId}
+            transactionId={transactionId || transactionsId}
             stageId={stageId} // Pass the stage_id to DatesContent
           />
         );
@@ -111,7 +113,7 @@ const Stepper = ({
         return (
           <ChecklistsContent
             currentStep={currentStep}
-            transactionId={transactionId}
+            transactionId={transactionId || transactionsId}
           />
         );
       case 'Accounting':
@@ -166,7 +168,6 @@ const Stepper = ({
             </div>
           ))}
         </div>
-
         <div className='flex mt-4 md:-mt-3 md:ms-10 justify-center'>
           <div
             className='bg-[#E0E0E0] px-3 py-1 me-4 flex justify-center items-center rounded-lg cursor-pointer'

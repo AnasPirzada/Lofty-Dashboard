@@ -7,9 +7,9 @@ import Stepper from './Stepper.jsx';
 export const Index = () => {
   const [selectedOption, setSelectedOption] = useState('Dates'); // Default to 'Dates'
   const location = useLocation();
-  const { transactionId, createdBy, state } = location.state || {};
+  const { transactionId, createdBy, state, transactionsId } =
+    location.state || {};
   const [currentStep, setCurrentStep] = useState(0); // Track the current step here
-
   return (
     <div>
       <NavBar />
@@ -28,6 +28,7 @@ export const Index = () => {
             selectedOption={selectedOption}
             setSelectedOption={setSelectedOption} // Pass this to Stepper
             transactionId={transactionId}
+            transactionsId={transactionsId}
             createdBy={createdBy}
             state={state}
             currentStep={currentStep}
