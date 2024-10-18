@@ -143,7 +143,7 @@ const DateFields = ({ transactionId, createdBy, state, stageId }) => {
         <div className='col-span-12 text-center mt-4'>
           <button
             onClick={handleAddDates}
-            className='btn  text-white rounded-lg bg-blue-500 py-3 px-7 my-6  btn-primary'
+            className='btn  text-white rounded-lg bg-gray-700 py-3 px-7 my-6  btn-primary'
           >
             Add Dates
           </button>

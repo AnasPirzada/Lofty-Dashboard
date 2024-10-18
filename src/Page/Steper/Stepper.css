@@ -21,7 +21,7 @@ a:hover {
 .arrow-steps .step {
   font-size: 14px;
   text-align: center;
-  color: #666;
+  color: #FFFFFF;
   cursor: default;
   margin: 0 3px 10px 0px;
 
@@ -29,7 +29,7 @@ a:hover {
   min-width: 140px;
   float: left;
   position: relative;
-  background-color: #E0E0E0;
+  background-color: #616161;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -47,7 +47,7 @@ a:hover {
   height: 0;
   border-top: 18px solid transparent;
   border-bottom: 24px solid transparent;
-  border-left: 18px solid #E0E0E0;
+  border-left: 18px solid #616161;
   z-index: 2;
   transition: border-color 0.2s ease;
 }

@@ -89,8 +89,8 @@ const ChecklistsContent = ({
   if (isLoading) {
     return (
       <div className='flex justify-center items-center h-48'>
-        <div className='animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500'></div>
-        <span className='ml-4 text-blue-500 font-semibold'>
+        <div className='animate-spin rounded-full h-16 w-16 border-t-4 border-gray-500'></div>
+        <span className='ml-4 text-gray-500 font-semibold'>
           Loading checklist...
         </span>
       </div>
@@ -132,7 +132,7 @@ const ChecklistsContent = ({
                         className='form-checkbox h-5 w-5 text-blue-600'
                       />
                       {loadingTaskId === task.task_id && (
-                        <div className='animate-spin rounded-full h-4 w-4 border-t-2 border-blue-600'></div>
+                        <div className='animate-spin rounded-full h-4 w-4 border-t-2 border-gray-600'></div>
                       )}
                     </label>
                   </td>

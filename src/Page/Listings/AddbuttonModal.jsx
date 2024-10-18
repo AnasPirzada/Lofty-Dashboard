@@ -281,7 +281,7 @@ const TransactionForm = ({ closeModal }) => {
 
       <button
         onClick={handleSave}
-        className='w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded'
+        className='w-full bg-gray-700 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded'
       >
         Save
       </button>
