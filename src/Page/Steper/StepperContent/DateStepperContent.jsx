@@ -73,7 +73,7 @@ const DateFields = ({ transactionId, createdBy, state, stageId }) => {
       if (response.ok) {
         const result = await response.json();
         console.log('Dates added successfully:', result);
-        toast.success('Transaction saved successfully!', {
+        toast.success('Dates added successfully', {
           position: 'top-right',
           autoClose: 3000,
           hideProgressBar: false,
