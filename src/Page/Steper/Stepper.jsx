@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Stepper.css';
 import AccountingContent from './StepperContent/AccountingContent.jsx';
 import ChecklistsContent from './StepperContent/ChecklistsContent';
@@ -9,27 +9,43 @@ import HistoryContent from './StepperContent/HistoryContent';
 import OffersContent from './StepperContent/OffersContent';
 import PropertyContent from './StepperContent/PropertyContent';
 
-const stepName = [
-  'Pre-Listing',
-  'Active Listing',
-  'Under Contract',
-  // 'Pending',
-  // 'Closed/Cancelled',
-];
-
-const Stepper = ({ selectedOption, transactionId, createdBy, state }) => {
-  // Track global completion state for all steps
-  const [stepsCompletion, setStepsCompletion] = useState(
-    stepName.map(() => false) // Initialize all steps as incomplete (false)
-  );
-
+const Stepper = ({
+  selectedOption,
+  transactionId,
+  createdBy,
+  state,
+  setSelectedOption,
+}) => {
+  const [steps, setSteps] = useState([]); // Store steps from API
   const [currentStep, setCurrentStep] = useState(0); // Track current step
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const [nextStep, setNextStep] = useState(null); // Track the step to move to after confirmation
+  const [stepsCompletion, setStepsCompletion] = useState([]); // Track completion state
+  const [loading, setLoading] = useState(true); // Track loading state
+
+  // Fetch stages from API
+  useEffect(() => {
+    const fetchStages = async () => {
+      try {
+        const response = await fetch(
+          'https://api.tkglisting.com/api/transactions/stages'
+        );
+        const data = await response.json();
+        const fetchedSteps = data.map(stage => stage.stage_name); // Get step names
+        setSteps(fetchedSteps); // Set steps from API
+        setStepsCompletion(fetchedSteps.map(() => false)); // Initialize completion state for each step
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching stages:', error);
+      }
+    };
+
+    fetchStages();
+  }, []);
 
   // Handle progressing to the next step
   const handleNext = () => {
-    if (currentStep < stepName.length - 1) {
+    if (currentStep < steps.length - 1) {
       setNextStep(currentStep + 1); // Set next step
       setIsModalOpen(true); // Open confirmation modal
     }
@@ -49,7 +65,8 @@ const Stepper = ({ selectedOption, transactionId, createdBy, state }) => {
 
     // Move to the confirmed step
     setCurrentStep(nextStep);
-
+    // Set Dates as active once confirmed
+    setSelectedOption('Dates');
     // Update global step completion state
     const updatedStepsCompletion = stepsCompletion.map((completed, index) => {
       if (index < nextStep) {
@@ -73,10 +90,10 @@ const Stepper = ({ selectedOption, transactionId, createdBy, state }) => {
     }
   };
 
-  console.log('in steper', transactionId);
-
   // Render the content based on the selected option
   const renderStepContent = () => {
+    const stageId = currentStep + 1; // Assuming stage IDs are 1-based
+
     switch (selectedOption) {
       case 'Dates':
         return (
@@ -84,6 +101,8 @@ const Stepper = ({ selectedOption, transactionId, createdBy, state }) => {
             currentStep={currentStep}
             createdBy={createdBy}
             state={state}
+            transactionId={transactionId}
+            stageId={stageId} // Pass the stage_id to DatesContent
           />
         );
       case 'Property':
@@ -93,7 +112,6 @@ const Stepper = ({ selectedOption, transactionId, createdBy, state }) => {
           <ChecklistsContent
             currentStep={currentStep}
             transactionId={transactionId}
-            // setTaskCounts={setTaskCounts}
           />
         );
       case 'Accounting':
@@ -111,13 +129,17 @@ const Stepper = ({ selectedOption, transactionId, createdBy, state }) => {
     }
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className='container'>
       {/* Modal for Confirmation */}
       {isModalOpen && (
         <div className='modal-overlay'>
           <div className='modal-content'>
-            <h3>Are you sure you want to move to {stepName[nextStep]}?</h3>
+            <h3>Are you sure you want to move to {steps[nextStep]}?</h3>
             <div className='modal-actions'>
               <button className='modal-btn cancel' onClick={cancelNextStep}>
                 Cancel
@@ -132,7 +154,7 @@ const Stepper = ({ selectedOption, transactionId, createdBy, state }) => {
 
       <div className='wrapper flex flex-col md:flex-row border items-center mt-2 bg-[#FFFFFF] py-6 ps-2 ms-2'>
         <div className='arrow-steps  clearfix'>
-          {stepName.map((step, index) => (
+          {steps.map((step, index) => (
             <div
               key={index}
               className={`step  ${currentStep === index ? 'current' : ''} ${
@@ -169,7 +191,7 @@ const Stepper = ({ selectedOption, transactionId, createdBy, state }) => {
         </div>
       </div>
 
-      <div className='mt-3 border bg-[#FFFFFF]  h-screen overflow-y-auto ms-2'>
+      <div className='mt-3 border bg-[#FFFFFF] h-screen overflow-y-auto ms-2'>
         {renderStepContent()}
       </div>
     </div>

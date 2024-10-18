@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { toast, ToastContainer } from 'react-toastify';
 
-const DateFields = ({ transactionId, createdBy, state }) => {
+const DateFields = ({ transactionId, createdBy, state, stageId }) => {
   const [dateFields, setDateFields] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
   const [openPickerIndex, setOpenPickerIndex] = useState(null);
+  console.log(transactionId);
 
   // Fetch the date fields from the API
   useEffect(() => {
@@ -52,7 +54,7 @@ const DateFields = ({ transactionId, createdBy, state }) => {
       created_by: createdBy, // Existing variable
       transaction_id: transactionId, // Add this variable
       state_id: 'IL', // Add this variable
-      stage_id: 7, // Example value, can be dynamic based on your logic
+      stage_id: stageId, // Example value, can be dynamic based on your logic
       dates: datesToAdd,
     };
 
@@ -71,6 +73,15 @@ const DateFields = ({ transactionId, createdBy, state }) => {
       if (response.ok) {
         const result = await response.json();
         console.log('Dates added successfully:', result);
+        toast.success('Transaction saved successfully!', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       } else {
         const errorResponse = await response.json();
         console.error(
@@ -85,56 +96,60 @@ const DateFields = ({ transactionId, createdBy, state }) => {
   };
 
   return (
-    <div className='grid grid-cols-12 gap-4'>
-      {dateFields.map((field, index) => (
-        <React.Fragment key={index}>
-          <div className='col-span-12 md:col-span-3 p-4'>
-            <p>{field.name}</p>
-          </div>
-          <div className='col-span-12 md:col-span-9 p-4'>
-            <div className='border rounded-lg p-2 flex items-center relative'>
-              <img
-                src='/calender-svgrepo-com.svg'
-                className='w-4 h-4 cursor-pointer'
-                alt='Calendar Icon'
-                onClick={() => setOpenPickerIndex(index)}
-                style={{ touchAction: 'manipulation' }} // Touch action for mobile
-              />
-              <p className='font-normal text-lg ms-4'>
-                {selectedDates[index]
-                  ? selectedDates[index].toLocaleDateString()
-                  : 'N/A'}
-              </p>
-              {openPickerIndex === index && (
-                <div className='absolute top-full left-0 z-10'>
-                  <DatePicker
-                    selected={selectedDates[index]}
-                    onChange={date => handleDateChange(date, index)}
-                    inline
-                    calendarClassName='custom-calendar' // Optional custom styling
-                    popperPlacement='bottom' // Positioning the calendar
-                    popperModifiers={{
-                      offset: {
-                        enabled: true,
-                        offset: '0, 10',
-                      },
-                    }}
-                  />
-                </div>
-              )}
+    <>
+      <ToastContainer />
+
+      <div className='grid grid-cols-12 gap-4'>
+        {dateFields.map((field, index) => (
+          <React.Fragment key={index}>
+            <div className='col-span-12 md:col-span-3 p-4'>
+              <p>{field.name}</p>
             </div>
-          </div>
-        </React.Fragment>
-      ))}
-      <div className='col-span-12 text-center mt-4'>
-        <button
-          onClick={handleAddDates}
-          className='btn  text-white rounded-lg bg-blue-500 py-3 px-7 my-6  btn-primary'
-        >
-          Add Dates
-        </button>
+            <div className='col-span-12 md:col-span-9 p-4'>
+              <div className='border rounded-lg p-2 flex items-center relative'>
+                <img
+                  src='/calender-svgrepo-com.svg'
+                  className='w-4 h-4 cursor-pointer'
+                  alt='Calendar Icon'
+                  onClick={() => setOpenPickerIndex(index)}
+                  style={{ touchAction: 'manipulation' }} // Touch action for mobile
+                />
+                <p className='font-normal text-lg ms-4'>
+                  {selectedDates[index]
+                    ? selectedDates[index].toLocaleDateString()
+                    : 'N/A'}
+                </p>
+                {openPickerIndex === index && (
+                  <div className='absolute top-full left-0 z-10'>
+                    <DatePicker
+                      selected={selectedDates[index]}
+                      onChange={date => handleDateChange(date, index)}
+                      inline
+                      calendarClassName='custom-calendar' // Optional custom styling
+                      popperPlacement='bottom' // Positioning the calendar
+                      popperModifiers={{
+                        offset: {
+                          enabled: true,
+                          offset: '0, 10',
+                        },
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </React.Fragment>
+        ))}
+        <div className='col-span-12 text-center mt-4'>
+          <button
+            onClick={handleAddDates}
+            className='btn  text-white rounded-lg bg-blue-500 py-3 px-7 my-6  btn-primary'
+          >
+            Add Dates
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
