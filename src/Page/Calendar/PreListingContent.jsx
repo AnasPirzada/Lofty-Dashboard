@@ -22,6 +22,7 @@ export const PreListingContent = () => {
     }
   };
 
+
   // Fetch tasks from the API
   const fetchTasks = async () => {
     try {
@@ -33,6 +34,7 @@ export const PreListingContent = () => {
     } catch (error) {
       toast.error('Failed to fetch tasks');
     }
+    
   };
 
   useEffect(() => {

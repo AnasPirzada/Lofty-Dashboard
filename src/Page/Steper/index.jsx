@@ -7,8 +7,14 @@ import Stepper from './Stepper.jsx';
 export const Index = () => {
   const [selectedOption, setSelectedOption] = useState('Dates'); // Default to 'Dates'
   const location = useLocation();
-  const { transactionId, createdBy, state, transactionsId } =
-    location.state || {};
+  const {
+    transactionId,
+    createdBy,
+    state,
+    transactionsId,
+    fullAddress,
+    price,
+  } = location.state || {};
   const [currentStep, setCurrentStep] = useState(0); // Track the current step here
   return (
     <div>
@@ -19,6 +25,7 @@ export const Index = () => {
           <SideSection
             setSelectedOption={setSelectedOption}
             selectedOption={selectedOption}
+            fullAddress={fullAddress}
             currentStep={currentStep} // Pass currentStep to conditionally apply active style
           />
         </div>
@@ -31,7 +38,9 @@ export const Index = () => {
             transactionsId={transactionsId}
             createdBy={createdBy}
             state={state}
+            price={price}
             currentStep={currentStep}
+            fullAddress={fullAddress}
             setCurrentStep={setCurrentStep} // Track and update step changes
           />
         </div>

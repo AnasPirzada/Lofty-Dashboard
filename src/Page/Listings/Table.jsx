@@ -58,24 +58,36 @@ const TableWithToolbar = () => {
       const data = await response.json();
       toast.success(data.message);
 
-      const mappedData = data.transactions.map(transaction => ({
-        transaction_id: transaction.transaction_id, // Add transactionId for passing to the stepper page
-        state_id: transaction.state,
-        address1: transaction.address1,
-        address2: transaction.address2,
-        city: transaction.city,
-        state: transaction.state,
-        created_by: transaction.created_by, // Add createdBy
-        first_name: transaction.first_name,
-        last_name: transaction.last_name,
-        task_status: transaction.task_status || 'Open',
-        expectedClose: transaction.expectedClose || null,
-        list_price: transaction.list_price,
-        transactionOwner: transaction.transactionOwner,
-        stage_id: mapStage(Number(transaction.stage_id)),
-        closedDate: transaction.closedDate,
-        currentStep: transaction.stage_id, // Assuming currentStep is the stage_id
-      }));
+      const mappedData = data.transactions.map(transaction => {
+        const address1 = transaction.address1 || ''; // Set empty string if null/undefined
+        const address2 = transaction.address2 || ''; // Set empty string if null/undefined
+        const city = transaction.city || ''; // Set empty string if null/undefined
+        const state = transaction.state || ''; // Set empty string if null/undefined
+
+        // Combine the parts into fullAddress, excluding any empty parts
+        const fullAddress = `${address1} ${address2}, ${city}, ${state}`.trim();
+        return {
+          transaction_id: transaction.transaction_id,
+          state_id: transaction.state,
+          address1: transaction.address1,
+          address2: transaction.address2,
+          city: transaction.city,
+          state: transaction.state,
+          fullAddress: fullAddress, // Save full address in one variable
+          created_by: transaction.created_by,
+          first_name: transaction.first_name,
+          last_name: transaction.last_name,
+          total_tasks: transaction.total_tasks,
+          completed_tasks: transaction.completed_tasks,
+          task_status: transaction.task_status || 'Open',
+          expectedClose: transaction.expectedClose || null,
+          list_price: transaction.list_price,
+          transactionOwner: transaction.transactionOwner,
+          stage_id: mapStage(Number(transaction.stage_id)),
+          closedDate: transaction.closedDate,
+          currentStep: transaction.stage_id,
+        };
+      });
 
       setTransactions(mappedData);
       setFilteredData(mappedData);
@@ -83,7 +95,6 @@ const TableWithToolbar = () => {
       toast.error('Failed to fetch transactions');
     }
   };
-
   const mapStage = stage_id => {
     switch (stage_id) {
       case 1:
@@ -105,17 +116,19 @@ const TableWithToolbar = () => {
     setCurrentPage(1);
   };
 
+  // Pass fullAddress to the stepper section
   const handleRowClick = row => {
     navigate('/StepperSection', {
       state: {
         transactionsId: row.transaction_id,
         createdBy: row.created_by,
         state: row.state,
+        price: row.list_price,
         currentStep: row.currentStep,
+        fullAddress: row.fullAddress, // Pass the full address here
       },
     });
   };
-
   const handleDateChange = (date, index) => {
     const updatedTransactions = [...filteredData];
     updatedTransactions[index].expectedClose = date;
@@ -150,15 +163,13 @@ const TableWithToolbar = () => {
                 <th className='px-4 py-2 text-left text-gray-700'>Lead</th>
                 <th className='px-4 py-2 text-left text-gray-700'>Task</th>
                 <th className='px-4 py-2 text-left text-gray-700'>Stage</th>
-                <th className='px-4 py-2 text-left text-gray-700'>
+                {/* <th className='px-4 py-2 text-left text-gray-700'>
                   transaction
-                </th>
+                </th> */}
                 <th className='px-4 py-2 text-left text-gray-700'>
                   Expected Close
                 </th>
-                <th className='px-4 py-2 text-left text-gray-700'>
-                  Sales Price
-                </th>
+                <th className='px-4 py-2 text-left text-gray-700'>Price</th>
               </tr>
             </thead>
             <tbody>
@@ -175,11 +186,14 @@ const TableWithToolbar = () => {
                   <td className='px-4 py-2 text-gray-600'>
                     {row.first_name} {row.last_name}
                   </td>
-                  <td className='px-4 py-2 text-gray-600'>{row.task_status}</td>
-                  <td className='px-4 py-2 text-gray-600'>{row.stage_id}</td>
                   <td className='px-4 py-2 text-gray-600'>
-                    {row.transaction_id}
+                    {/* {row.task_status} */}
+                    {row.total_tasks}/{row.completed_tasks}
                   </td>
+                  <td className='px-4 py-2 text-gray-600'>{row.stage_id}</td>
+                  {/* <td className='px-4 py-2 text-gray-600'>
+                    {row.transaction_id}
+                  </td> */}
                   <td className='px-4 py-2 text-gray-600 flex justify-start items-center'>
                     {row.expectedClose ? (
                       row.expectedClose
@@ -217,7 +231,10 @@ const TableWithToolbar = () => {
                       onChange={e => handleDateChange(e.target.value, index)}
                     />
                   </td>
-                  <td className='px-4 py-2 text-gray-600'>${row.list_price}</td>
+                  <td className='px-4 py-2 text-gray-600'>
+                    {' '}
+                    ${parseInt(row.list_price).toLocaleString()}
+                  </td>
                 </motion.tr>
               ))}
             </tbody>

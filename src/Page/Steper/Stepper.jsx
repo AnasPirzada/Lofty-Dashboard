@@ -14,6 +14,8 @@ const Stepper = ({
   transactionId,
   createdBy,
   state,
+  price,
+  fullAddress,
   setSelectedOption,
   transactionsId,
 }) => {
@@ -61,35 +63,41 @@ const Stepper = ({
     }
   };
 
-  // Confirm the next step
+  // Handle going to the previous step (with confirmation)
+  const handlePrev = () => {
+    if (currentStep > 0) {
+      setNextStep(currentStep - 1); // Set the previous step as the next step
+      setIsModalOpen(true); // Open the confirmation modal
+    }
+  };
+
+  // Confirm the next step (whether forward or backward)
   const confirmNextStep = () => {
     setIsModalOpen(false); // Close the modal
 
     // Move to the confirmed step
     setCurrentStep(nextStep);
-    // Set Dates as active once confirmed
-    setSelectedOption('Dates');
+
     // Update global step completion state
     const updatedStepsCompletion = stepsCompletion.map((completed, index) => {
       if (index < nextStep) {
         return true; // Mark all steps up to and including the confirmed step as done
+      } else if (index >= nextStep) {
+        return false; // Unmark steps beyond the confirmed step if moving backward
       }
       return completed;
     });
-    setStepsCompletion(updatedStepsCompletion); // Save completion status globally
+
+    setStepsCompletion(updatedStepsCompletion); // Save the updated completion status
+
+    // Set Dates as active once confirmed (or retain the selected option)
+    setSelectedOption('Dates');
   };
 
   // Cancel moving to the next step
   const cancelNextStep = () => {
     setIsModalOpen(false); // Close the modal without progressing
     setNextStep(null); // Clear the next step
-  };
-
-  // Handle going to the previous step
-  const handlePrev = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
   };
 
   // Render the content based on the selected option
@@ -108,7 +116,13 @@ const Stepper = ({
           />
         );
       case 'Property':
-        return <PropertyContent currentStep={currentStep} />;
+        return (
+          <PropertyContent
+            currentStep={currentStep}
+            fullAddress={fullAddress}
+            price={price}
+          />
+        );
       case 'Checklists':
         return (
           <ChecklistsContent

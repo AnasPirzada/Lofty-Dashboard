@@ -7,36 +7,46 @@ const DateFields = ({ transactionId, createdBy, state, stageId }) => {
   const [dateFields, setDateFields] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
   const [openPickerIndex, setOpenPickerIndex] = useState(null);
-  console.log(transactionId);
 
   // Fetch the date fields from the API
   useEffect(() => {
     const fetchDates = async () => {
       try {
         const response = await fetch(
-          'https://api.tkglisting.com/api/transactions/dates'
+          `https://api.tkglisting.com/api/dates/${transactionId}`
         );
         const data = await response.json();
 
-        const filteredDates = data.map(dateField => ({
-          name: dateField.date_name,
-          created_date: new Date(dateField.created_date),
-        }));
+        // Log the data to inspect its structure
+        console.log('API Response Data:', data);
 
-        setDateFields(filteredDates);
-        setSelectedDates(Array(filteredDates.length).fill(null));
+        // Check if the data contains the expected properties
+        if (data.dates && Array.isArray(data.dates)) {
+          // Create a new array for date fields based on the response
+          const filteredDates = data.dates.map(item => ({
+            name: item.date_name, // Assuming the key is date_name
+            entered_date: new Date(item.entered_date), // Access entered_date directly
+          }));
+
+          setDateFields(filteredDates);
+          setSelectedDates(filteredDates.map(item => item.entered_date)); // Initialize selectedDates with entered_date
+        } else {
+          console.error('Unexpected data format:', data);
+        }
       } catch (error) {
         console.error('Error fetching date fields:', error);
       }
     };
 
-    fetchDates();
-  }, []);
+    if (transactionId) {
+      fetchDates();
+    }
+  }, [transactionId]);
 
   // Handle date change
   const handleDateChange = (date, index) => {
     const newDates = [...selectedDates];
-    newDates[index] = date;
+    newDates[index] = date; // Set the new date
     setSelectedDates(newDates);
     setOpenPickerIndex(null);
   };
@@ -44,17 +54,21 @@ const DateFields = ({ transactionId, createdBy, state, stageId }) => {
   // Function to handle API call to add dates
   const handleAddDates = async () => {
     const datesToAdd = selectedDates
-      .map((date, index) => ({
-        date_name: dateFields[index]?.name,
-        date_value: date ? date.toISOString().split('T')[0] : null,
-      }))
-      .filter(date => date.date_value); // Filter out invalid dates
+      .map((date, index) =>
+        date
+          ? {
+              date_name: dateFields[index]?.name,
+              date_value: date.toISOString(), // Keep the full ISO string for the API
+            }
+          : null
+      )
+      .filter(date => date); // Filter out invalid dates
 
     const body = {
-      created_by: createdBy, // Existing variable
-      transaction_id: transactionId, // Add this variable
-      state_id: 'IL', // Add this variable
-      stage_id: stageId, // Example value, can be dynamic based on your logic
+      created_by: createdBy,
+      transaction_id: transactionId,
+      state_id: state,
+      stage_id: stageId,
       dates: datesToAdd,
     };
 
@@ -98,7 +112,6 @@ const DateFields = ({ transactionId, createdBy, state, stageId }) => {
   return (
     <>
       <ToastContainer />
-
       <div className='grid grid-cols-12 gap-4'>
         {dateFields.map((field, index) => (
           <React.Fragment key={index}>
@@ -116,8 +129,10 @@ const DateFields = ({ transactionId, createdBy, state, stageId }) => {
                 />
                 <p className='font-normal text-lg ms-4'>
                   {selectedDates[index]
-                    ? selectedDates[index].toLocaleDateString()
-                    : 'N/A'}
+                    ? selectedDates[index].toLocaleDateString() // Display selected date
+                    : field.entered_date // Fallback to entered_date
+                    ? field.entered_date.toLocaleDateString() // Format entered_date
+                    : 'N/A'}{' '}
                 </p>
                 {openPickerIndex === index && (
                   <div className='absolute top-full left-0 z-10'>
@@ -125,8 +140,8 @@ const DateFields = ({ transactionId, createdBy, state, stageId }) => {
                       selected={selectedDates[index]}
                       onChange={date => handleDateChange(date, index)}
                       inline
-                      calendarClassName='custom-calendar' // Optional custom styling
-                      popperPlacement='bottom' // Positioning the calendar
+                      calendarClassName='custom-calendar'
+                      popperPlacement='bottom'
                       popperModifiers={{
                         offset: {
                           enabled: true,
@@ -143,7 +158,7 @@ const DateFields = ({ transactionId, createdBy, state, stageId }) => {
         <div className='col-span-12 text-center mt-4'>
           <button
             onClick={handleAddDates}
-            className='btn  text-white rounded-lg bg-gray-700 py-3 px-7 my-6  btn-primary'
+            className='btn text-white rounded-lg bg-gray-700 py-3 px-7 my-6 btn-primary'
           >
             Add Dates
           </button>

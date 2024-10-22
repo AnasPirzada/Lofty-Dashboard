@@ -4,6 +4,7 @@ export const SideSection = ({
   setSelectedOption,
   selectedOption,
   currentStep,
+  fullAddress,
 }) => {
   const [checklistCounts, setChecklistCounts] = useState({
     total_tasks: 0,
@@ -16,11 +17,6 @@ export const SideSection = ({
     { name: 'Dates', hasBadge: false },
     { name: 'Property', hasBadge: false },
     { name: 'Checklists', hasBadge: false, count: '0/0' },
-    { name: 'Accounting', hasBadge: false },
-    { name: 'Contacts', hasBadge: false },
-    { name: 'Documents', hasBadge: false, count: '0' },
-    { name: 'Offers', hasBadge: false, count: '0' },
-    { name: 'History', hasBadge: false },
   ];
 
   // Fetch tasks from localStorage and update state
@@ -115,7 +111,7 @@ export const SideSection = ({
         <div className='text-gray-400 cursor-pointer'>⋮</div>
       </div>
       <div className='text-lg font-bold text-gray-800 mb-2 leading-tight'>
-        123 Main St, Cambridge, MA 02142
+        {fullAddress}{' '}
       </div>
 
       {/* Transaction Information Section */}
