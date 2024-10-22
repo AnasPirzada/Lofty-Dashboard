@@ -188,7 +188,7 @@ const TableWithToolbar = () => {
                   </td>
                   <td className='px-4 py-2 text-gray-600'>
                     {/* {row.task_status} */}
-                    {row.total_tasks}/{row.completed_tasks}
+                    {row.completed_tasks}/{row.total_tasks}
                   </td>
                   <td className='px-4 py-2 text-gray-600'>{row.stage_id}</td>
                   {/* <td className='px-4 py-2 text-gray-600'>

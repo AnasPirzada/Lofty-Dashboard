@@ -24,7 +24,9 @@ const PropertyContent = ({ currentStep, price, fullAddress }) => {
 
             <div className='flex justify-start border ps-5 py-5'>
               <span className='text-gray-600 w-40'> Price</span>
-              <span className='text-gray-800  font-semibold'>${price}</span>
+              <span className='text-gray-800  font-semibold'>
+                ${parseInt(price).toLocaleString()}
+              </span>
             </div>
           </div>
         </div>

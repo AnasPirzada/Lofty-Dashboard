@@ -102,6 +102,7 @@ const TransactionForm = ({ closeModal }) => {
       created_by: createdBy,
     };
 
+    console.log('add button res', payload);
     try {
       const response = await fetch(
         'https://api.tkglisting.com/api/transactions/add',
@@ -114,7 +115,7 @@ const TransactionForm = ({ closeModal }) => {
         }
       );
 
-      console.log(response);
+      console.log('add button res', response);
 
       if (response.ok) {
         const responseData = await response.json();
