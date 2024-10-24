@@ -124,7 +124,7 @@ const TableWithToolbar = () => {
         createdBy: row.created_by,
         state: row.state,
         price: row.list_price,
-        currentStep: row.currentStep,
+        currentSteps: row.currentStep,
         fullAddress: row.fullAddress, // Pass the full address here
       },
     });

@@ -20,28 +20,20 @@ const DateFields = ({
     { name: 'Appraisal Date' },
   ];
 
-  const stageNames = [
-    'Initial Step', // Replace with actual stage names
-    'Middle Step', // Replace with actual stage names
-    'Final Step', // Replace with actual stage names
-  ];
-
+  const stageNames = ['Pre-Listing', 'Active Listing', 'Under Contract'];
   const relevantFields = [
-    [0, 1, 2, 3, 4, 5, 6], // Fields for Initial Step
-    [0, 1, 2, 3, 4, 5, 6], // Fields for Middle Step (only 'Contract Signed Date')
-    [0, 1, 2, 3, 4, 5, 6], // Fields for Final Step
+    [0, 1, 2, 3, 4, 5, 6], // Pre-Listing relevant fields
+    [0, 1, 2, 3, 4, 5, 6], // Active Listing relevant fields
+    [0, 1, 2, 3, 4, 5, 6], // Under Contract relevant fields
   ];
 
   const [dateFields, setDateFields] = useState(staticFields);
-  const [selectedDates, setSelectedDates] = useState(
-    Array(staticFields.length).fill(null)
-  );
+  const [selectedDatesByStage, setSelectedDatesByStage] = useState({});
   const [openPickerIndex, setOpenPickerIndex] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Fetch transaction-specific dates
-  // Fetch transaction-specific dates
+  // Fetch transaction-specific dates for the current stage
   const fetchTransactionDates = async () => {
     setIsLoading(true);
     setErrorMessage('');
@@ -61,9 +53,11 @@ const DateFields = ({
       console.log('data', data);
 
       if (data.stages && Array.isArray(data.stages)) {
+        // Find the stage data matching the current stageId
         const stageData = data.stages.find(stage => stage.stage_id === stageId);
 
         if (stageData && stageData.dates) {
+          // Map the transaction dates for the current stage
           const transactionDates = stageData.dates.map(item => ({
             name: item.date_name,
             entered_date: item.entered_date
@@ -71,15 +65,20 @@ const DateFields = ({
               : null,
           }));
 
-          // Update the static fields with the transaction-specific dates
           const updatedDates = staticFields.map(field => {
             const match = transactionDates.find(
               tDate => tDate.name === field.name
             );
             return match
               ? { ...field, entered_date: match.entered_date }
-              : field;
+              : { ...field, entered_date: null };
           });
+
+          // Update selectedDatesByStage only for the current stageId
+          setSelectedDatesByStage(prev => ({
+            ...prev,
+            [stageId]: updatedDates.map(field => field.entered_date || null),
+          }));
 
           setDateFields(updatedDates);
         } else {
@@ -105,20 +104,25 @@ const DateFields = ({
 
   // Handle date change
   const handleDateChange = (date, index) => {
-    const newDates = [...selectedDates];
-    newDates[index] = date;
-    setSelectedDates(newDates);
+    const updatedDatesForStage = [...(selectedDatesByStage[stageId] || [])];
+    updatedDatesForStage[index] = date;
+    setSelectedDatesByStage(prev => ({
+      ...prev,
+      [stageId]: updatedDatesForStage,
+    }));
     setOpenPickerIndex(null);
   };
 
-  // Logic to add dates
+  // Add dates logic
   const handleAddDates = async () => {
+    const selectedDates = selectedDatesByStage[stageId] || [];
+
     const datesToAdd = selectedDates
       .map((date, index) => ({
         date_name: dateFields[index]?.name,
         date_value: date ? date.toISOString().split('T')[0] : null,
       }))
-      .filter(date => date.date_value);
+      .filter(date => date.date_value); // Only add dates that have a value
 
     const body = {
       created_by: createdBy,
@@ -153,8 +157,7 @@ const DateFields = ({
           progress: undefined,
         });
 
-        // Refetch dates after adding
-        fetchTransactionDates();
+        fetchTransactionDates(); // Refetch dates after adding
       } else {
         const errorResponse = await response.json();
         console.error('Error adding dates:', errorResponse);
@@ -168,9 +171,10 @@ const DateFields = ({
     }
   };
 
-  // Render date fields
+  // Render date fields for the current step
   const renderStep = stepIndex => {
     const fieldsToDisplay = relevantFields[stepIndex];
+    const selectedDates = selectedDatesByStage[stageId] || [];
 
     return (
       <div className='grid grid-cols-12 gap-4'>
@@ -178,7 +182,11 @@ const DateFields = ({
           {stageNames[stepIndex] || 'Stage Information'}
         </h2>
         {isLoading ? (
-          <p>Loading...</p>
+          <p>
+            <div className='fixed inset-0 bg-gray-200 bg-opacity-60 flex justify-center items-center'>
+              <div className='w-8 h-8 border-t-4 border-gray-200 border-solid rounded-full animate-spin'></div>
+            </div>
+          </p>
         ) : (
           fieldsToDisplay.map(fieldIndex => {
             const field = dateFields[fieldIndex];
@@ -220,15 +228,6 @@ const DateFields = ({
             );
           })
         )}
-        <div className='col-span-12 text-center mt-4'>
-          <button
-            onClick={handleAddDates}
-            className='btn text-white rounded-lg bg-gray-700 py-3 px-7 my-6 btn-primary'
-            disabled={isLoading}
-          >
-            {isLoading ? 'Adding...' : 'Add Dates'}
-          </button>
-        </div>
       </div>
     );
   };
@@ -236,7 +235,19 @@ const DateFields = ({
   return (
     <>
       <ToastContainer />
-      {renderStep(currentStep)}
+      <div className='container mx-auto p-4'>
+        {renderStep(currentStep)}
+
+        <div className='flex justify-end'>
+          <button
+            onClick={handleAddDates}
+            className='bg-blue-500 text-white px-4 py-2 rounded-lg mt-4'
+            disabled={isLoading}
+          >
+            {isLoading ? 'Adding Dates...' : 'Add Dates'}
+          </button>
+        </div>
+      </div>
     </>
   );
 };

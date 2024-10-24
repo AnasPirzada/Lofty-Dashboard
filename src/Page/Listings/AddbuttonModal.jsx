@@ -115,11 +115,11 @@ const TransactionForm = ({ closeModal }) => {
         }
       );
 
-      console.log('add button res', response);
+      console.log('new added', response);
 
       if (response.ok) {
         const responseData = await response.json();
-        console.log(responseData.transaction_id);
+        console.log('new added', responseData);
         const transactionId = responseData.transaction_id;
         toast.success('Transaction saved successfully!', {
           position: 'top-right',
@@ -137,7 +137,7 @@ const TransactionForm = ({ closeModal }) => {
         throw new Error('Failed to save transaction');
       }
     } catch (error) {
-      toast.error('Error saving transaction. Please try again.', {
+      toast.error('Error saving transaction. Please try again.', error, {
         position: 'top-right',
         autoClose: 3000,
         hideProgressBar: false,

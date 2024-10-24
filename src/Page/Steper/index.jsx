@@ -13,9 +13,12 @@ export const Index = () => {
     state,
     transactionsId,
     fullAddress,
+    currentSteps,
     price,
   } = location.state || {};
   const [currentStep, setCurrentStep] = useState(0); // Track the current step here
+  console.log('currentSteps', currentSteps, transactionsId, transactionId);
+
   return (
     <div>
       <NavBar />
@@ -40,6 +43,7 @@ export const Index = () => {
             state={state}
             price={price}
             currentStep={currentStep}
+            currentSte={currentSteps}
             fullAddress={fullAddress}
             setCurrentStep={setCurrentStep} // Track and update step changes
           />
