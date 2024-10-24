@@ -3,8 +3,13 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast, ToastContainer } from 'react-toastify';
 
-const DateFields = ({ transactionId, createdBy, state, stageId }) => {
-  // Statically defined field names
+const DateFields = ({
+  transactionId,
+  createdBy,
+  state,
+  stageId,
+  currentStep,
+}) => {
   const staticFields = [
     { name: 'Appointment Date' },
     { name: 'Listing Date' },
@@ -15,7 +20,19 @@ const DateFields = ({ transactionId, createdBy, state, stageId }) => {
     { name: 'Appraisal Date' },
   ];
 
-  const [dateFields, setDateFields] = useState(staticFields); // Initialize with static fields
+  const stageNames = [
+    'Initial Step', // Replace with actual stage names
+    'Middle Step', // Replace with actual stage names
+    'Final Step', // Replace with actual stage names
+  ];
+
+  const relevantFields = [
+    [0, 1, 2, 3, 4, 5, 6], // Fields for Initial Step
+    [0, 1, 2, 3, 4, 5, 6], // Fields for Middle Step (only 'Contract Signed Date')
+    [0, 1, 2, 3, 4, 5, 6], // Fields for Final Step
+  ];
+
+  const [dateFields, setDateFields] = useState(staticFields);
   const [selectedDates, setSelectedDates] = useState(
     Array(staticFields.length).fill(null)
   );
@@ -23,6 +40,7 @@ const DateFields = ({ transactionId, createdBy, state, stageId }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  // Fetch transaction-specific dates
   // Fetch transaction-specific dates
   const fetchTransactionDates = async () => {
     setIsLoading(true);
@@ -36,44 +54,54 @@ const DateFields = ({ transactionId, createdBy, state, stageId }) => {
         console.error(
           'Transaction not found, proceeding with static fields only.'
         );
-        return; // Do nothing, just display static fields
+        return;
       }
 
       const data = await response.json();
+      console.log('data', data);
 
-      if (data.dates && Array.isArray(data.dates)) {
-        const transactionDates = data.dates.map(item => ({
-          name: item.date_name,
-          created_date: new Date(item.entered_date),
-        }));
+      if (data.stages && Array.isArray(data.stages)) {
+        const stageData = data.stages.find(stage => stage.stage_id === stageId);
 
-        // Replace general dates with transaction-specific dates where the name matches
-        const updatedDates = staticFields.map(field => {
-          const match = transactionDates.find(
-            tDate => tDate.name === field.name
-          );
-          return match ? { ...field, created_date: match.created_date } : field;
-        });
+        if (stageData && stageData.dates) {
+          const transactionDates = stageData.dates.map(item => ({
+            name: item.date_name,
+            entered_date: item.entered_date
+              ? new Date(item.entered_date)
+              : null,
+          }));
 
-        setDateFields(updatedDates);
+          // Update the static fields with the transaction-specific dates
+          const updatedDates = staticFields.map(field => {
+            const match = transactionDates.find(
+              tDate => tDate.name === field.name
+            );
+            return match
+              ? { ...field, entered_date: match.entered_date }
+              : field;
+          });
+
+          setDateFields(updatedDates);
+        } else {
+          console.error('No matching stage data found for this stageId.');
+        }
       } else {
         console.error('Unexpected data format:', data);
-        setErrorMessage('Failed to fetch transaction-specific date fields.');
       }
     } catch (error) {
       console.error('Error fetching transaction-specific date fields:', error);
-      setErrorMessage('Error fetching date fields. Please try again later.');
+      setErrorMessage('Failed to fetch dates. Please try again later.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Fetch dates when component mounts
+  // Fetch dates when component mounts or stageId changes
   useEffect(() => {
     if (transactionId) {
       fetchTransactionDates();
     }
-  }, [transactionId]);
+  }, [transactionId, stageId]);
 
   // Handle date change
   const handleDateChange = (date, index) => {
@@ -140,50 +168,57 @@ const DateFields = ({ transactionId, createdBy, state, stageId }) => {
     }
   };
 
-  return (
-    <>
-      <ToastContainer />
-      {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
+  // Render date fields
+  const renderStep = stepIndex => {
+    const fieldsToDisplay = relevantFields[stepIndex];
+
+    return (
       <div className='grid grid-cols-12 gap-4'>
+        <h2 className='col-span-12 text-xl font-bold mb-4'>
+          {stageNames[stepIndex] || 'Stage Information'}
+        </h2>
         {isLoading ? (
           <p>Loading...</p>
         ) : (
-          dateFields.map((field, index) => (
-            <React.Fragment key={index}>
-              <div className='col-span-12 md:col-span-3 p-4'>
-                <p>{field.name}</p>
-              </div>
-              <div className='col-span-12 md:col-span-9 p-4'>
-                <div className='border rounded-lg p-2 flex items-center relative'>
-                  <img
-                    src='/calender-svgrepo-com.svg'
-                    className='w-4 h-4 cursor-pointer'
-                    alt='Calendar Icon'
-                    onClick={() => setOpenPickerIndex(index)}
-                    style={{ touchAction: 'manipulation' }}
-                  />
-                  <p className='font-normal text-lg ms-4'>
-                    {selectedDates[index]
-                      ? selectedDates[index].toLocaleDateString()
-                      : field.created_date
-                      ? field.created_date.toLocaleDateString()
-                      : 'N/A'}
-                  </p>
-                  {openPickerIndex === index && (
-                    <div className='absolute top-full left-0 z-10'>
-                      <DatePicker
-                        selected={selectedDates[index]}
-                        onChange={date => handleDateChange(date, index)}
-                        inline
-                        calendarClassName='custom-calendar'
-                        popperPlacement='bottom'
-                      />
-                    </div>
-                  )}
+          fieldsToDisplay.map(fieldIndex => {
+            const field = dateFields[fieldIndex];
+            return (
+              <React.Fragment key={fieldIndex}>
+                <div className='col-span-12 md:col-span-3 p-4'>
+                  <p>{field.name}</p>
                 </div>
-              </div>
-            </React.Fragment>
-          ))
+                <div className='col-span-12 md:col-span-9 p-4'>
+                  <div className='border rounded-lg p-2 flex items-center relative'>
+                    <img
+                      src='/calender-svgrepo-com.svg'
+                      className='w-4 h-4 cursor-pointer'
+                      alt='Calendar Icon'
+                      onClick={() => setOpenPickerIndex(fieldIndex)}
+                      style={{ touchAction: 'manipulation' }}
+                    />
+                    <p className='font-normal text-lg ms-4'>
+                      {selectedDates[fieldIndex]
+                        ? selectedDates[fieldIndex].toLocaleDateString()
+                        : field.entered_date
+                        ? field.entered_date.toLocaleDateString()
+                        : 'N/A'}
+                    </p>
+                    {openPickerIndex === fieldIndex && (
+                      <div className='absolute top-full left-0 z-10'>
+                        <DatePicker
+                          selected={selectedDates[fieldIndex]}
+                          onChange={date => handleDateChange(date, fieldIndex)}
+                          inline
+                          calendarClassName='custom-calendar'
+                          popperPlacement='bottom'
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </React.Fragment>
+            );
+          })
         )}
         <div className='col-span-12 text-center mt-4'>
           <button
@@ -195,6 +230,13 @@ const DateFields = ({ transactionId, createdBy, state, stageId }) => {
           </button>
         </div>
       </div>
+    );
+  };
+
+  return (
+    <>
+      <ToastContainer />
+      {renderStep(currentStep)}
     </>
   );
 };

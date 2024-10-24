@@ -31,21 +31,38 @@ const Stepper = ({
   useEffect(() => {
     const fetchStages = async () => {
       try {
-        const response = await fetch(
+        // Fetch the stages from the transactions API
+        const stagesResponse = await fetch(
           'https://api.tkglisting.com/api/transactions/stages'
         );
-        const data = await response.json();
-        const fetchedSteps = data.map(stage => stage.stage_name); // Get step names
+        const stagesData = await stagesResponse.json();
+        const fetchedSteps = stagesData.map(stage => stage.stage_name); // Get step names
         setSteps(fetchedSteps); // Set steps from API
         setStepsCompletion(fetchedSteps.map(() => false)); // Initialize completion state for each step
+
+        // Now fetch the dates API to compare stages
+        const datesResponse = await fetch(
+          `https://api.tkglisting.com/api/dates/${transactionsId}`
+        );
+        const datesData = await datesResponse.json();
+
+        // Extract stage names or IDs from the dates API response
+        const dateStages = datesData.stages.map(stage => stage.stage_name);
+
+        // Update completion status based on the stage name match
+        const updatedCompletion = fetchedSteps.map(step =>
+          dateStages.includes(step) ? true : false
+        );
+
+        setStepsCompletion(updatedCompletion); // Update the completion status
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching stages:', error);
+        console.error('Error fetching stages or dates:', error);
       }
     };
 
     fetchStages();
-  }, []);
+  }, [transactionsId]);
 
   // Handle progressing to the next step
   const handleNext = () => {
