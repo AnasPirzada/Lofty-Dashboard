@@ -27,6 +27,42 @@ const Stepper = ({
   const [loading, setLoading] = useState(true); // Track loading state
   console.log(transactionsId);
 
+  // // Fetch stages from API
+  // useEffect(() => {
+  //   const fetchStages = async () => {
+  //     try {
+  //       // Fetch the stages from the transactions API
+  //       const stagesResponse = await fetch(
+  //         'https://api.tkglisting.com/api/transactions/stages'
+  //       );
+  //       const stagesData = await stagesResponse.json();
+  //       const fetchedSteps = stagesData.map(stage => stage.stage_name); // Get step names
+  //       setSteps(fetchedSteps); // Set steps from API
+  //       setStepsCompletion(fetchedSteps.map(() => false)); // Initialize completion state for each step
+
+  //       // Now fetch the dates API to compare stages
+  //       const datesResponse = await fetch(
+  //         `https://api.tkglisting.com/api/dates/${transactionsId}`
+  //       );
+  //       const datesData = await datesResponse.json();
+
+  //       // Extract stage names or IDs from the dates API response
+  //       const dateStages = datesData.stages.map(stage => stage.stage_name);
+
+  //       // Update completion status based on the stage name match
+  //       const updatedCompletion = fetchedSteps.map(step =>
+  //         dateStages.includes(step) ? true : false
+  //       );
+
+  //       setStepsCompletion(updatedCompletion); // Update the completion status
+  //       setLoading(false);
+  //     } catch (error) {
+  //       console.error('Error fetching stages or dates:', error);
+  //     }
+  //   };
+
+  //   fetchStages();
+  // }, [transactionsId]);
   // Fetch stages from API
   useEffect(() => {
     const fetchStages = async () => {
@@ -37,24 +73,37 @@ const Stepper = ({
         );
         const stagesData = await stagesResponse.json();
         const fetchedSteps = stagesData.map(stage => stage.stage_name); // Get step names
-        setSteps(fetchedSteps); // Set steps from API
-        setStepsCompletion(fetchedSteps.map(() => false)); // Initialize completion state for each step
 
-        // Now fetch the dates API to compare stages
+        // Fetch the dates API to compare stages
         const datesResponse = await fetch(
           `https://api.tkglisting.com/api/dates/${transactionsId}`
         );
         const datesData = await datesResponse.json();
 
-        // Extract stage names or IDs from the dates API response
-        const dateStages = datesData.stages.map(stage => stage.stage_name);
+        let dateStages = [];
+        if (datesData.stages && datesData.stages.length > 0) {
+          // Extract stage names or IDs from the dates API response if present
+          dateStages = datesData.stages.map(stage => stage.stage_name);
+        }
 
-        // Update completion status based on the stage name match
-        const updatedCompletion = fetchedSteps.map(step =>
-          dateStages.includes(step) ? true : false
-        );
+        // Determine the steps to show
+        let stepsToDisplay = [];
+        let completionStatus = [];
 
-        setStepsCompletion(updatedCompletion); // Update the completion status
+        if (dateStages.length > 0) {
+          // Use the stages from the `dates` API, marking as active if present
+          stepsToDisplay = fetchedSteps;
+          completionStatus = fetchedSteps.map(step =>
+            dateStages.includes(step)
+          );
+        } else {
+          // Use all stages fetched from `stages` API if no stage names found in `dates` API, mark as inactive
+          stepsToDisplay = fetchedSteps;
+          completionStatus = fetchedSteps.map(() => false); // Initially mark all as inactive
+        }
+
+        setSteps(stepsToDisplay); // Set steps from API
+        setStepsCompletion(completionStatus); // Set initial completion state
         setLoading(false);
       } catch (error) {
         console.error('Error fetching stages or dates:', error);
@@ -63,7 +112,6 @@ const Stepper = ({
 
     fetchStages();
   }, [transactionsId]);
-
   // Handle progressing to the next step
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
