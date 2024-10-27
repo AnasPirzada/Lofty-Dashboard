@@ -7,8 +7,6 @@ const sidebarItems = [
       { name: 'All Tasks', count: 0 },
       { name: 'Scheduled', count: 0 },
       { name: 'Today', count: 0 },
-      { name: 'This Week', count: 0 },
-      { name: 'This Month', count: 0 },
       { name: 'Overdue', count: 0 },
       { name: 'Finished', count: 0 },
     ],
@@ -32,8 +30,8 @@ const Sidebar = ({
 
   // Calculate counts for each task category
   const counts = {
-    Tasks: tasks.length,
-    scheduled: tasks.filter(task => task.taskStatus === 'Scheduled').length,
+    alltasks: tasks.length,
+    Scheduled: tasks.filter(task => task.taskStatus === 'Scheduled').length,
     today: tasks.filter(task => {
       const taskDate = new Date(task.enteredDate);
       return taskDate.toDateString() === new Date().toDateString();
@@ -64,7 +62,8 @@ const Sidebar = ({
 
   // Log counts for debugging
   console.log('Counts:', counts); // Ensure these are showing correct values
-
+  console.log('This Week Count:', counts.thisMonth);
+  console.log('This Month Count:', counts.thisWeek);
   return (
     <>
       <button
@@ -113,11 +112,41 @@ const Sidebar = ({
                     }`}
                   >
                     {item.name}
-                    {/* <span className='text-gray-400'>{count}</span>{' '} */}
+                    <span className='text-gray-400'>{count}</span>{' '}
                     {/* Displaying the count here */}
                   </li>
                 );
               })}
+
+              {/* Display counts for This Week and This Month directly */}
+              <li
+                className={`cursor-pointer flex justify-between items-center mt-1 px-2 py-1 rounded ${
+                  myTasksSelectedTab === 'This Week'
+                    ? 'bg-[#E0E0E0] text-[#9094A5]'
+                    : ''
+                }`}
+                onClick={() => {
+                  setActiveSection(section.title);
+                  setMyTasksSelectedTab('This Week');
+                }}
+              >
+                This Week
+                <span className='text-gray-400'>{counts.thisWeek}</span>
+              </li>
+              <li
+                className={`cursor-pointer flex justify-between items-center mt-1 px-2 py-1 rounded ${
+                  myTasksSelectedTab === 'This Month'
+                    ? 'bg-[#E0E0E0] text-[#9094A5]'
+                    : ''
+                }`}
+                onClick={() => {
+                  setActiveSection(section.title);
+                  setMyTasksSelectedTab('This Month');
+                }}
+              >
+                This Month
+                <span className='text-gray-400'>{counts.thisMonth}</span>
+              </li>
             </ul>
           </div>
         ))}
