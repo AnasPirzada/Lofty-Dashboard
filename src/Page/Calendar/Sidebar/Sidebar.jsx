@@ -32,7 +32,7 @@ const Sidebar = ({
 
   // Calculate counts for each task category
   const counts = {
-    allTasks: tasks.length,
+    Tasks: tasks.length,
     scheduled: tasks.filter(task => task.taskStatus === 'Scheduled').length,
     today: tasks.filter(task => {
       const taskDate = new Date(task.enteredDate);
@@ -113,7 +113,7 @@ const Sidebar = ({
                     }`}
                   >
                     {item.name}
-                    <span className='text-gray-400'>{count}</span>{' '}
+                    {/* <span className='text-gray-400'>{count}</span>{' '} */}
                     {/* Displaying the count here */}
                   </li>
                 );
