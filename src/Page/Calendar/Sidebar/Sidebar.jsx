@@ -34,10 +34,10 @@ const Sidebar = ({
   const counts = {
     allTasks: tasks.length,
     scheduled: tasks.filter(task => task.taskStatus === 'Scheduled').length,
-    today: tasks.filter(
-      task =>
-        new Date(task.enteredDate).toDateString() === new Date().toDateString()
-    ).length,
+    today: tasks.filter(task => {
+      const taskDate = new Date(task.enteredDate);
+      return taskDate.toDateString() === new Date().toDateString();
+    }).length,
     thisWeek: tasks.filter(task => {
       const taskDate = new Date(task.enteredDate);
       const now = new Date();
@@ -55,11 +55,10 @@ const Sidebar = ({
         taskDate.getFullYear() === now.getFullYear()
       );
     }).length,
-    overdue: tasks.filter(
-      task =>
-        new Date(task.enteredDate) < new Date() &&
-        task.taskStatus !== 'Completed'
-    ).length,
+    overdue: tasks.filter(task => {
+      const taskDate = new Date(task.enteredDate);
+      return taskDate < new Date() && task.taskStatus !== 'Completed';
+    }).length,
     finished: tasks.filter(task => task.taskStatus === 'Completed').length,
   };
 
@@ -114,7 +113,7 @@ const Sidebar = ({
                     }`}
                   >
                     {item.name}
-                    {/* <span className='text-gray-400'>{count}</span>{' '} */}
+                    <span className='text-gray-400'>{count}</span>{' '}
                     {/* Displaying the count here */}
                   </li>
                 );

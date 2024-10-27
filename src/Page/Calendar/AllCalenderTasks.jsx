@@ -38,7 +38,11 @@ export const AllCalenderTasks = () => {
   // Function to format the date for display
   const formatDate = date => {
     if (!date) return 'N/A'; // Fallback if the date is null
-    return date.toLocaleDateString(); // Format the date for display
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }); // Format the date for display
   };
 
   return (
@@ -64,7 +68,7 @@ export const AllCalenderTasks = () => {
               {/* Transaction column */}
               <td className='px-4 py-3 flex items-center'>
                 <input type='checkbox' className='mr-2' />
-                <span className='text-nowrap'>Transaction</span>
+                <span className='text-nowrap'>{task.transactionName}</span>
               </td>
               {/* Address column */}
               <td className='px-4 py-3'>
