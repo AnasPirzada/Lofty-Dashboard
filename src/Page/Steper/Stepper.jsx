@@ -132,11 +132,11 @@ const Stepper = ({
     if (currentStage === null || currentStage === undefined) {
       new_stage = 1; // If current stage is null or undefined, set new stage to 1
     } else if (currentStage === 1) {
-      new_stage = 2; // If current stage is 1, set new stage to 2
+      new_stage = 1; // If current stage is 1, set new stage to 2
     } else if (currentStage === 2) {
-      new_stage = 3; // If current stage is 2, set new stage to 3
+      new_stage = 2; // If current stage is 2, set new stage to 3
     } else if (currentStage === 3) {
-      new_stage = 1; // If current stage is 3, set new stage to 4
+      new_stage = 3; // If current stage is 3, set new stage to 4
     } else {
       toast.error('Invalid current stage value. Please check again.', {
         position: 'top-right',

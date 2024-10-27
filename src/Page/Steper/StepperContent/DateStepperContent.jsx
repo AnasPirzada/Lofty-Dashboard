@@ -11,15 +11,14 @@ const DateFields = ({
   currentStep,
 }) => {
   const stageNames = ['Pre-Listing', 'Active Listing', 'Under Contract'];
-
-  const [dateFields, setDateFields] = useState([]); // Static date fields with name and ID
-  const [transactionDates, setTransactionDates] = useState([]); // Dynamic date values for transaction-specific data
+  const [dateFields, setDateFields] = useState([]);
+  const [transactionDates, setTransactionDates] = useState([]);
   const [selectedDatesByStage, setSelectedDatesByStage] = useState({});
   const [openPickerIndex, setOpenPickerIndex] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Fetch all date fields from API (to display date names and structure)
+  // Fetch static date fields
   const fetchAllDateFields = async () => {
     setIsLoading(true);
     setErrorMessage('');
@@ -28,9 +27,8 @@ const DateFields = ({
         'https://api.tkglisting.com/api/transactions/dates'
       );
       if (!response.ok) throw new Error('Failed to fetch dates from API');
-
       const data = await response.json();
-      setDateFields(data); // Set static fields with names, etc.
+      setDateFields(data);
     } catch (error) {
       console.error('Error fetching date fields:', error);
       setErrorMessage('Failed to fetch dates. Please try again later.');
@@ -43,7 +41,7 @@ const DateFields = ({
     fetchAllDateFields();
   }, []);
 
-  // Fetch transaction-specific dates for updating entered_date and date_value
+  // Fetch transaction-specific dates
   const fetchTransactionDates = async () => {
     if (!transactionId) return;
     setIsLoading(true);
@@ -55,18 +53,16 @@ const DateFields = ({
       if (!response.ok) throw new Error('Transaction not found.');
 
       const data = await response.json();
-      console.log(data);
 
+      // Filter dates by current stageId
       const stageData = data.stages.find(stage => stage.stage_id === stageId);
-      console.log(stageData);
+      const transactionDates = (stageData?.dates || []).map(item => ({
+        date_name: item.date_name,
+        entered_date: item.entered_date ? new Date(item.entered_date) : null,
+        date_value: item.date_value ? new Date(item.date_value) : null,
+      }));
 
-      if (stageData && stageData.dates) {
-        const transactionDates = stageData.dates.map(item => ({
-          date_name: item.date_name,
-          entered_date: item.entered_date ? new Date(item.entered_date) : null,
-        }));
-        setTransactionDates(transactionDates); // Only updates transaction-specific dates
-      }
+      setTransactionDates(transactionDates);
     } catch (error) {
       console.error('Error fetching transaction-specific date fields:', error);
       setErrorMessage('Failed to fetch dates. Please try again later.');
@@ -120,9 +116,8 @@ const DateFields = ({
           position: 'top-right',
           autoClose: 3000,
         });
-        await fetchTransactionDates();
+        await fetchTransactionDates(); // Refresh to see updated dates
         await fetchAllDateFields();
-        // fetchTransactionDates(); // Refresh to see updated dates
       } else {
         setErrorMessage('Failed to add dates. Please try again later.');
       }
@@ -150,6 +145,7 @@ const DateFields = ({
             const transactionDate = transactionDates.find(
               tDate => tDate.date_name === field.date_name
             );
+
             return (
               <React.Fragment key={index}>
                 <div className='col-span-12 md:col-span-3 p-4'>
@@ -169,6 +165,8 @@ const DateFields = ({
                         ? selectedDates[index].toLocaleDateString()
                         : transactionDate?.entered_date
                         ? transactionDate.entered_date.toLocaleDateString()
+                        : transactionDate?.date_value
+                        ? transactionDate.date_value.toLocaleDateString()
                         : 'N/A'}
                     </p>
                     {openPickerIndex === index && (
@@ -197,10 +195,10 @@ const DateFields = ({
       <ToastContainer />
       <div className='container mx-auto p-4'>
         {renderStep(currentStep)}
-        <div className='flex justify-end'>
+        <div className='flex justify-center'>
           <button
             onClick={handleAddDates}
-            className='bg-blue-500 text-white px-4 py-2 rounded-lg mt-4'
+            className='bg-gray-500 text-white px-4 py-2 rounded-lg mt-4'
             disabled={isLoading}
           >
             {isLoading ? 'Adding Dates...' : 'Add Dates'}
