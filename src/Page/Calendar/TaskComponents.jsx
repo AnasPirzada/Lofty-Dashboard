@@ -42,7 +42,7 @@ const TaskTable = ({ tasks }) => (
         >
           <td className='px-4 py-3 flex items-center'>
             <input type='checkbox' className='mr-2' />
-            <span className='text-nowrap'>{task.transactionName}</span>
+            <span className='text-nowrap'>Transaction</span>
           </td>
           <td className='px-4 py-3'>{task.address}</td>
           <td className='px-4 py-3'>{task.taskName}</td>

@@ -64,7 +64,7 @@ export const AllCalenderTasks = () => {
               {/* Transaction column */}
               <td className='px-4 py-3 flex items-center'>
                 <input type='checkbox' className='mr-2' />
-                <span className='text-nowrap'>{task.transactionName}</span>
+                <span className='text-nowrap'>Transaction</span>
               </td>
               {/* Address column */}
               <td className='px-4 py-3'>

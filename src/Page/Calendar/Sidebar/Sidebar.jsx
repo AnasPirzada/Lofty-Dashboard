@@ -1,4 +1,3 @@
-// src/components/Sidebar.js
 import React, { useState } from 'react';
 
 const sidebarItems = [
@@ -97,7 +96,7 @@ const Sidebar = ({
 
                 // Get the count for the current item
                 const count =
-                  counts[item.name.toLowerCase().replace(' ', '')] || 0;
+                  counts[item.name.toLowerCase().replace(/ /g, '')] || 0;
 
                 return (
                   <li
@@ -115,11 +114,8 @@ const Sidebar = ({
                     }`}
                   >
                     {item.name}
-                    {/*   <span className='text-gray-400'>{count}</span> */}
-
-                    {item.name === 'All Tasks' ? counts.allTasks : count}
-                    {item.name === 'Scheduled' ? counts.scheduled : count}
-                    {item.name === 'thisWeek' ? counts.thisWeek : count}
+                    {/* <span className='text-gray-400'>{count}</span>{' '} */}
+                    {/* Displaying the count here */}
                   </li>
                 );
               })}
