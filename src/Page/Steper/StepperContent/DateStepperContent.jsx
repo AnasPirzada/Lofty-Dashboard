@@ -11,7 +11,6 @@ const DateFields = ({
   currentStep,
 }) => {
   const stageNames = ['Pre-Listing', 'Active Listing', 'Under Contract'];
-
   const [dateFields, setDateFields] = useState([]);
   const [selectedDatesByStage, setSelectedDatesByStage] = useState({});
   const [openPickerIndex, setOpenPickerIndex] = useState(null);
@@ -62,23 +61,23 @@ const DateFields = ({
         const transactionDates = stageData.dates.map(item => ({
           name: item.date_name,
           entered_date: item.entered_date ? new Date(item.entered_date) : null,
+          date_value: item.date_value ? new Date(item.date_value) : null,
         }));
 
         const updatedDates = dateFields.map(field => {
           const match = transactionDates.find(
             tDate => tDate.name === field.date_name
           );
-          return match
-            ? { ...field, entered_date: match.entered_date }
-            : { ...field, entered_date: null };
+          return {
+            ...field,
+            entered_date: match?.entered_date || match?.date_value || null,
+          };
         });
 
         setSelectedDatesByStage(prev => ({
           ...prev,
           [stageId]: updatedDates.map(field => field.entered_date || null),
         }));
-
-        setDateFields(updatedDates);
       }
     } catch (error) {
       console.error('Error fetching transaction-specific date fields:', error);
@@ -108,6 +107,7 @@ const DateFields = ({
     const selectedDates = selectedDatesByStage[stageId] || [];
     const datesToAdd = selectedDates
       .map((date, index) => ({
+        date_id: dateFields[index]?.date_id,
         date_name: dateFields[index]?.date_name,
         date_value: date ? date.toISOString().split('T')[0] : null,
       }))
@@ -132,9 +132,6 @@ const DateFields = ({
       });
 
       if (response.ok) {
-        const result = await response.json();
-        console.log(result);
-
         toast.success('Dates added or updated successfully.', {
           position: 'top-right',
           autoClose: 3000,
@@ -142,11 +139,9 @@ const DateFields = ({
         fetchTransactionDates();
       } else {
         const errorResponse = await response.json();
-        console.error('Error adding dates:', errorResponse);
         setErrorMessage('Failed to add dates. Please try again later.');
       }
     } catch (error) {
-      console.error('Network error while adding dates:', error);
       setErrorMessage('Error adding dates. Please try again later.');
     } finally {
       setIsLoading(false);
