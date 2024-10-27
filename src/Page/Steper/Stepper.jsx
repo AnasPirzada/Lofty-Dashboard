@@ -40,7 +40,12 @@ const Stepper = ({
           'https://api.tkglisting.com/api/transactions/stages'
         );
         const stagesData = await stagesResponse.json();
+        console.log('stages', stagesData);
+
         const fetchedSteps = stagesData.map(stage => stage.stage_name); // Get step names
+        const fetchedStepsid = stagesData.map(stage => stage.stage_id); // Get step names
+
+        console.log('fetchedStepsid', fetchedStepsid);
 
         // Fetch the dates API to compare stages
         const datesResponse = await fetch(
@@ -113,45 +118,36 @@ const Stepper = ({
       transactionId,
     });
 
-    // Ensure `transactionId` and `transactionsId` are properly extracted as strings or numbers
-    let transactionKey = null;
-    if (transactionId && typeof transactionId !== 'object') {
-      transactionKey = transactionId.toString(); // Use transactionId if valid
-    } else if (transactionsId && typeof transactionsId !== 'object') {
-      transactionKey = transactionsId.toString(); // Use transactionsId if valid
+    // Get valid transaction key
+    const transactionKey = transactionId
+      ? transactionId.toString()
+      : transactionsId.toString();
+    console.log('Transaction Key for URL:', transactionKey);
+
+    // Parse `currentSte` as integer
+    const currentStage = parseInt(currentSte, 10);
+    console.log('Current stage:', currentStage);
+
+    // Check and set `nextStep` relative to `currentStage`
+    let new_stage;
+    if (nextStep === currentStage) {
+      new_stage = currentStage + 1; // If `nextStep` hasn't changed, move forward
+    } else if (nextStep > currentStage) {
+      new_stage = Math.min(currentStage + 1, 3); // Forward
+    } else {
+      new_stage = Math.max(currentStage - 1, 1); // Backward
     }
 
-    // Log the selected transaction key
-    console.log('Transaction Key for URL:', transactionKey);
-    const currentStage = currentSte !== null ? parseInt(currentSte, 10) : null;
+    console.log('New stage:', new_stage);
 
-    // Determine the new stage based on current_stage
-    let new_stage;
-
-    // Ensure currentSte is a number or handle other cases
-    if (currentStage === null || currentStage === undefined) {
-      new_stage = 1; // If current stage is null or undefined, set new stage to 1
-    } else if (currentStage === 1) {
-      new_stage = 1; // If current stage is 1, set new stage to 2
-    } else if (currentStage === 2) {
-      new_stage = 2; // If current stage is 2, set new stage to 3
-    } else if (currentStage === 3) {
-      new_stage = 3; // If current stage is 3, set new stage to 4
-    } else {
-      toast.error('Invalid current stage value. Please check again.', {
+    if (new_stage < 1 || new_stage > 3) {
+      toast.error('Invalid stage. Please check the steps and try again.', {
         position: 'top-right',
         autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
       });
-      return; // Exit early if the current stage is invalid
+      return;
     }
 
-    // Log the data to be sent in the API call
-    console.log('currentSteps:', currentStage);
-    console.log('new_stage:', new_stage);
     console.log('API Request Data:', {
       transaction_id: transactionKey,
       current_stage: currentStage,
@@ -159,11 +155,8 @@ const Stepper = ({
     });
 
     try {
-      // Make sure the transactionKey is valid before proceeding
       if (!transactionKey) {
-        throw new Error(
-          'Invalid transaction key. Please check the input values.'
-        );
+        throw new Error('Invalid transaction key.');
       }
 
       const response = await fetch(
@@ -174,38 +167,26 @@ const Stepper = ({
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            current_stage: currentSte, // Set the current stage
-            new_stage: new_stage, // Set the new stage
+            current_stage: currentStage,
+            new_stage: new_stage,
           }),
         }
       );
 
-      console.log('API Response:', response);
-
       const result = await response.json();
-      console.log('API Response Data:', result);
+      console.log('API Response:', result);
     } catch (error) {
       console.error('Error during API call:', error);
     }
 
-    setIsModalOpen(false); // Close the modal
+    setIsModalOpen(false);
 
-    // Move to the confirmed step
-    setCurrentStep(nextStep);
+    setCurrentStep(new_stage - 1); // Zero-based step index
 
-    // Update global step completion state
     const updatedStepsCompletion = stepsCompletion.map((completed, index) => {
-      if (index < nextStep) {
-        return true; // Mark all steps up to and including the confirmed step as done
-      } else if (index >= nextStep) {
-        return false; // Unmark steps beyond the confirmed step if moving backward
-      }
-      return completed;
+      return index < new_stage - 1;
     });
-
-    setStepsCompletion(updatedStepsCompletion); // Save the updated completion status
-
-    // Set Dates as active once confirmed (or retain the selected option)
+    setStepsCompletion(updatedStepsCompletion);
     setSelectedOption('Dates');
   };
 

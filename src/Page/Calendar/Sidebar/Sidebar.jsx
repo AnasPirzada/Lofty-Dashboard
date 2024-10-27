@@ -5,27 +5,15 @@ const sidebarItems = [
   {
     title: 'My Tasks',
     subItems: [
-      'All Tasks',
-      'Scheduled',
-      'Today',
-      'This Week',
-      'This Month',
-      'Overdue',
-      'Finished',
+      { name: 'All Tasks', count: 0 },
+      { name: 'Scheduled', count: 0 },
+      { name: 'Today', count: 0 },
+      { name: 'This Week', count: 0 },
+      { name: 'This Month', count: 0 },
+      { name: 'Overdue', count: 0 },
+      { name: 'Finished', count: 0 },
     ],
   },
-  // {
-  //   title: 'Team Tasks',
-  //   subItems: [
-  //     'All Tasks',
-  //     'Scheduled',
-  //     'Today',
-  //     'This Week',
-  //     'This Month',
-  //     'Overdue',
-  //     'Finished',
-  //   ],
-  // },
 ];
 
 const Sidebar = ({
@@ -35,15 +23,52 @@ const Sidebar = ({
   setTeamTasksSelectedTab,
   setActiveSection,
   activeSection,
+  tasks,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+
+  // Calculate counts for each task category
+  const counts = {
+    allTasks: tasks.length,
+    scheduled: tasks.filter(task => task.taskStatus === 'Scheduled').length,
+    today: tasks.filter(
+      task =>
+        new Date(task.enteredDate).toDateString() === new Date().toDateString()
+    ).length,
+    thisWeek: tasks.filter(task => {
+      const taskDate = new Date(task.enteredDate);
+      const now = new Date();
+      const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+      const endOfWeek = new Date(
+        now.setDate(now.getDate() + (6 - now.getDay()))
+      );
+      return taskDate >= startOfWeek && taskDate <= endOfWeek;
+    }).length,
+    thisMonth: tasks.filter(task => {
+      const taskDate = new Date(task.enteredDate);
+      const now = new Date();
+      return (
+        taskDate.getMonth() === now.getMonth() &&
+        taskDate.getFullYear() === now.getFullYear()
+      );
+    }).length,
+    overdue: tasks.filter(
+      task =>
+        new Date(task.enteredDate) < new Date() &&
+        task.taskStatus !== 'Completed'
+    ).length,
+    finished: tasks.filter(task => task.taskStatus === 'Completed').length,
+  };
+
+  // Log counts for debugging
+  console.log('Counts:', counts); // Ensure these are showing correct values
+
   return (
     <>
-      {/* Toggle Button */}
       <button
         className={`md:hidden fixed top-30 left-4 z-30 p-2 bg-gray-700 text-white rounded-lg px-6 focus:outline-none ${
           isOpen ? 'ms-32 mt-4 top-0' : ' left-0'
@@ -54,8 +79,7 @@ const Sidebar = ({
       </button>
 
       <div
-        // className='w-64 bg-gray-900 text-gray-300 h-screen p-4'
-        className={` bg-gray-700 text-gray-300 p-4 z-40 transition-transform duration-300 ${
+        className={`bg-gray-700 text-gray-300 p-4 z-40 transition-transform duration-300 ${
           isOpen
             ? 'translate-x-0 fixed top-0 left-0 '
             : '-translate-x-full h-0 md:h-full'
@@ -63,16 +87,17 @@ const Sidebar = ({
       >
         {sidebarItems.map((section, sectionIndex) => (
           <div key={sectionIndex}>
-            <h3 className='font-bold text-white uppercase'>
-              {section.title}
-            </h3>
+            <h3 className='font-bold text-white uppercase'>{section.title}</h3>
             <ul className='mt-2 mb-6'>
               {section.subItems.map((item, idx) => {
-                // Determine if this is the selected item based on the section
                 const isSelected =
                   section.title === 'My Tasks'
-                    ? myTasksSelectedTab === item
-                    : teamTasksSelectedTab === item;
+                    ? myTasksSelectedTab === item.name
+                    : teamTasksSelectedTab === item.name;
+
+                // Get the count for the current item
+                const count =
+                  counts[item.name.toLowerCase().replace(' ', '')] || 0;
 
                 return (
                   <li
@@ -80,17 +105,21 @@ const Sidebar = ({
                     onClick={() => {
                       setActiveSection(section.title);
                       if (section.title === 'My Tasks') {
-                        setMyTasksSelectedTab(item);
+                        setMyTasksSelectedTab(item.name);
                       } else {
-                        setTeamTasksSelectedTab(item);
+                        setTeamTasksSelectedTab(item.name);
                       }
                     }}
-                    className={`cursor-pointer flex justify-between items-center  mt-1 px-2 py-1 rounded ${
+                    className={`cursor-pointer flex justify-between items-center mt-1 px-2 py-1 rounded ${
                       isSelected ? 'bg-[#E0E0E0] text-[#9094A5]' : ''
                     }`}
                   >
-                    {item}
-                    <p className='first'>0</p>
+                    {item.name}
+                    {/*   <span className='text-gray-400'>{count}</span> */}
+
+                    {item.name === 'All Tasks' ? counts.allTasks : count}
+                    {item.name === 'Scheduled' ? counts.scheduled : count}
+                    {item.name === 'thisWeek' ? counts.thisWeek : count}
                   </li>
                 );
               })}

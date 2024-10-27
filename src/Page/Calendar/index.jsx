@@ -1,14 +1,23 @@
 // src/pages/index.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import NavBar from '../../Components/NavBar';
 import MainContent from './MainContent.jsx';
 import Sidebar from './Sidebar/Sidebar.jsx';
+import { fetchTasks } from './TaskComponents.jsx'; // Correctly import as a named import
 import TopNav from './TopNav.jsx';
-
 export const index = () => {
   const [myTasksSelectedTab, setMyTasksSelectedTab] = useState('All Tasks');
   const [teamTasksSelectedTab, setTeamTasksSelectedTab] = useState('');
   const [activeSection, setActiveSection] = useState('My Tasks');
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchTasks(); // Fetch your tasks
+      setTasks(data);
+    };
+    fetchData();
+  }, []);
 
   return (
     <div>
@@ -24,6 +33,7 @@ export const index = () => {
                 setTeamTasksSelectedTab={setTeamTasksSelectedTab}
                 setActiveSection={setActiveSection}
                 activeSection={activeSection}
+                tasks={tasks}
               />
             </div>
             <div className='col-span-9 lg:col-span-10'>
