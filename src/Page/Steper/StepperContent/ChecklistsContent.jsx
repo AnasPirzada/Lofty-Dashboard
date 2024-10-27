@@ -43,11 +43,14 @@ const ChecklistsContent = ({ currentStep, transactionId, setTaskCounts }) => {
           }),
         }
       );
+      console.log('checklist response', response);
 
       if (response.ok) {
         console.log(
           `Task ${taskId} in stage ${stageId} status updated to ${updatedStatus}`
         );
+        console.log('checklist response', response);
+
         await fetchData();
       } else {
         console.error('Failed to update task status');
@@ -124,7 +127,8 @@ const ChecklistsContent = ({ currentStep, transactionId, setTaskCounts }) => {
                     </td>
                     <td className='py-2 px-4 border-b'>{task.task_name}</td>
                     <td className='py-2 px-2 text-nowrap border-b'>
-                      {getDateLabel(task.task_days)}
+                      {/* {getDateLabel(task.task_days)} */}
+                      {task.task_days} day
                     </td>
                   </tr>
                 ))}
