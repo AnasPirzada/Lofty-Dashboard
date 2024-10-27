@@ -102,7 +102,7 @@ const TransactionForm = ({ closeModal }) => {
       created_by: createdBy,
     };
 
-    console.log('add button res', payload);
+    console.log('Payload being sent:', payload);
     try {
       const response = await fetch(
         'https://api.tkglisting.com/api/transactions/add',
@@ -120,7 +120,16 @@ const TransactionForm = ({ closeModal }) => {
       if (response.ok) {
         const responseData = await response.json();
         console.log('new added', responseData);
-        const transactionId = responseData.transaction_id;
+        const transactionId = responseData.transaction.transaction_id;
+        const address = responseData.transaction.address1;
+        const city = responseData.transaction.city;
+        const list_price = responseData.transaction.list_price;
+        const fullAddress = `${address}, ${city}`;
+        const price = list_price;
+        console.log('Transaction ID:', transactionId);
+        console.log('Full address:', fullAddress);
+        console.log('Price:', price);
+
         toast.success('Transaction saved successfully!', {
           position: 'top-right',
           autoClose: 3000,
@@ -130,8 +139,16 @@ const TransactionForm = ({ closeModal }) => {
           draggable: true,
           progress: undefined,
         });
+        let currentSteps = 1;
         navigate('/StepperSection', {
-          state: { transactionId, createdBy, state },
+          state: {
+            transactionId,
+            createdBy,
+            state,
+            currentSteps,
+            fullAddress,
+            price,
+          },
         });
       } else {
         throw new Error('Failed to save transaction');
@@ -150,7 +167,7 @@ const TransactionForm = ({ closeModal }) => {
   };
 
   return (
-    <div className='p-6 max-w-lg mx-auto bg-white shadow-lg rounded-lg md:max-w-2xl lg:w-[700px]'>
+    <div className='p-6 max-w-lg mx-auto bg-white shadow-lg rounded-lg md:max-w-4xl lg:w-[700px]'>
       <ToastContainer />
       <h2 className='text-xl font-semibold mb-4'>Add Details</h2>
 

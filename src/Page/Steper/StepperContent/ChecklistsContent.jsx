@@ -82,9 +82,10 @@ const ChecklistsContent = ({ currentStep, transactionId, setTaskCounts }) => {
     return tasks.sort((a, b) => a.task_days - b.task_days);
   };
 
-  // Render tasks for each stage
+  // Render tasks for each stage, excluding tasks with "remove": true
   const renderStageContent = stage => {
-    const sortedTasks = sortTasks(stage.tasks); // Sort tasks before rendering
+    const visibleTasks = stage.tasks.filter(task => !task.remove);
+    const sortedTasks = sortTasks(visibleTasks); // Sort tasks before rendering
 
     return (
       <div key={stage.stage_id} className={`stage-${stage.stage_id}`}>

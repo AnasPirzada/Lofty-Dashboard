@@ -10,30 +10,40 @@ const DateFields = ({
   stageId,
   currentStep,
 }) => {
-  const staticFields = [
-    { name: 'Appointment Date' },
-    { name: 'Listing Date' },
-    { name: 'Closing Date' },
-    { name: 'Contract Signed Date' },
-    { name: 'Expiration Date' },
-    { name: 'Home Inspection Date' },
-    { name: 'Appraisal Date' },
-  ];
-
   const stageNames = ['Pre-Listing', 'Active Listing', 'Under Contract'];
-  const relevantFields = [
-    [0, 1, 2, 3, 4, 5, 6], // Pre-Listing relevant fields
-    [0, 1, 2, 3, 4, 5, 6], // Active Listing relevant fields
-    [0, 1, 2, 3, 4, 5, 6], // Under Contract relevant fields
-  ];
 
-  const [dateFields, setDateFields] = useState(staticFields);
+  const [dateFields, setDateFields] = useState([]);
   const [selectedDatesByStage, setSelectedDatesByStage] = useState({});
   const [openPickerIndex, setOpenPickerIndex] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Fetch transaction-specific dates for the current stage
+  // Fetch all date fields from API
+  const fetchAllDateFields = async () => {
+    setIsLoading(true);
+    setErrorMessage('');
+    try {
+      const response = await fetch(
+        'https://api.tkglisting.com/api/transactions/dates'
+      );
+      if (!response.ok) {
+        throw new Error('Failed to fetch dates from API');
+      }
+      const data = await response.json();
+      setDateFields(data);
+    } catch (error) {
+      console.error('Error fetching date fields:', error);
+      setErrorMessage('Failed to fetch dates. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllDateFields();
+  }, []);
+
+  // Fetch dates for a specific transaction
   const fetchTransactionDates = async () => {
     setIsLoading(true);
     setErrorMessage('');
@@ -41,51 +51,34 @@ const DateFields = ({
       const response = await fetch(
         `https://api.tkglisting.com/api/dates/${transactionId}`
       );
-
-      if (response.status === 404) {
-        console.error(
-          'Transaction not found, proceeding with static fields only.'
-        );
-        return;
+      if (!response.ok) {
+        throw new Error('Transaction not found.');
       }
 
       const data = await response.json();
-      console.log('data', data);
+      const stageData = data.stages.find(stage => stage.stage_id === stageId);
 
-      if (data.stages && Array.isArray(data.stages)) {
-        // Find the stage data matching the current stageId
-        const stageData = data.stages.find(stage => stage.stage_id === stageId);
+      if (stageData && stageData.dates) {
+        const transactionDates = stageData.dates.map(item => ({
+          name: item.date_name,
+          entered_date: item.entered_date ? new Date(item.entered_date) : null,
+        }));
 
-        if (stageData && stageData.dates) {
-          // Map the transaction dates for the current stage
-          const transactionDates = stageData.dates.map(item => ({
-            name: item.date_name,
-            entered_date: item.entered_date
-              ? new Date(item.entered_date)
-              : null,
-          }));
+        const updatedDates = dateFields.map(field => {
+          const match = transactionDates.find(
+            tDate => tDate.name === field.date_name
+          );
+          return match
+            ? { ...field, entered_date: match.entered_date }
+            : { ...field, entered_date: null };
+        });
 
-          const updatedDates = staticFields.map(field => {
-            const match = transactionDates.find(
-              tDate => tDate.name === field.name
-            );
-            return match
-              ? { ...field, entered_date: match.entered_date }
-              : { ...field, entered_date: null };
-          });
+        setSelectedDatesByStage(prev => ({
+          ...prev,
+          [stageId]: updatedDates.map(field => field.entered_date || null),
+        }));
 
-          // Update selectedDatesByStage only for the current stageId
-          setSelectedDatesByStage(prev => ({
-            ...prev,
-            [stageId]: updatedDates.map(field => field.entered_date || null),
-          }));
-
-          setDateFields(updatedDates);
-        } else {
-          console.error('No matching stage data found for this stageId.');
-        }
-      } else {
-        console.error('Unexpected data format:', data);
+        setDateFields(updatedDates);
       }
     } catch (error) {
       console.error('Error fetching transaction-specific date fields:', error);
@@ -95,14 +88,12 @@ const DateFields = ({
     }
   };
 
-  // Fetch dates when component mounts or stageId changes
   useEffect(() => {
     if (transactionId) {
       fetchTransactionDates();
     }
   }, [transactionId, stageId]);
 
-  // Handle date change
   const handleDateChange = (date, index) => {
     const updatedDatesForStage = [...(selectedDatesByStage[stageId] || [])];
     updatedDatesForStage[index] = date;
@@ -113,16 +104,14 @@ const DateFields = ({
     setOpenPickerIndex(null);
   };
 
-  // Add dates logic
   const handleAddDates = async () => {
     const selectedDates = selectedDatesByStage[stageId] || [];
-
     const datesToAdd = selectedDates
       .map((date, index) => ({
-        date_name: dateFields[index]?.name,
+        date_name: dateFields[index]?.date_name,
         date_value: date ? date.toISOString().split('T')[0] : null,
       }))
-      .filter(date => date.date_value); // Only add dates that have a value
+      .filter(date => date.date_value);
 
     const body = {
       created_by: createdBy,
@@ -131,8 +120,6 @@ const DateFields = ({
       stage_id: stageId,
       dates: datesToAdd,
     };
-
-    console.log('Request Body:', JSON.stringify(body, null, 2));
 
     setIsLoading(true);
     try {
@@ -146,18 +133,13 @@ const DateFields = ({
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Dates added successfully:', result);
-        toast.success('Dates added successfully', {
+        console.log(result);
+
+        toast.success('Dates added or updated successfully.', {
           position: 'top-right',
           autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
         });
-
-        fetchTransactionDates(); // Refetch dates after adding
+        fetchTransactionDates();
       } else {
         const errorResponse = await response.json();
         console.error('Error adding dates:', errorResponse);
@@ -171,9 +153,7 @@ const DateFields = ({
     }
   };
 
-  // Render date fields for the current step
   const renderStep = stepIndex => {
-    const fieldsToDisplay = relevantFields[stepIndex];
     const selectedDates = selectedDatesByStage[stageId] || [];
 
     return (
@@ -182,51 +162,46 @@ const DateFields = ({
           {stageNames[stepIndex] || 'Stage Information'}
         </h2>
         {isLoading ? (
-          <p>
-            <div className='fixed inset-0 bg-gray-200 bg-opacity-60 flex justify-center items-center'>
-              <div className='w-8 h-8 border-t-4 border-gray-200 border-solid rounded-full animate-spin'></div>
-            </div>
-          </p>
+          <div className='fixed inset-0 bg-gray-200 bg-opacity-60 flex justify-center items-center'>
+            <div className='w-8 h-8 border-t-4 border-gray-200 border-solid rounded-full animate-spin'></div>
+          </div>
         ) : (
-          fieldsToDisplay.map(fieldIndex => {
-            const field = dateFields[fieldIndex];
-            return (
-              <React.Fragment key={fieldIndex}>
-                <div className='col-span-12 md:col-span-3 p-4'>
-                  <p>{field.name}</p>
+          dateFields.map((field, index) => (
+            <React.Fragment key={index}>
+              <div className='col-span-12 md:col-span-3 p-4'>
+                <p>{field.date_name}</p>
+              </div>
+              <div className='col-span-12 md:col-span-9 p-4'>
+                <div className='border rounded-lg p-2 flex items-center relative'>
+                  <img
+                    src='/calender-svgrepo-com.svg'
+                    className='w-4 h-4 cursor-pointer'
+                    alt='Calendar Icon'
+                    onClick={() => setOpenPickerIndex(index)}
+                    style={{ touchAction: 'manipulation' }}
+                  />
+                  <p className='font-normal text-lg ms-4'>
+                    {selectedDates[index]
+                      ? selectedDates[index].toLocaleDateString()
+                      : field.entered_date
+                      ? field.entered_date.toLocaleDateString()
+                      : 'N/A'}
+                  </p>
+                  {openPickerIndex === index && (
+                    <div className='absolute top-full left-0 z-10'>
+                      <DatePicker
+                        selected={selectedDates[index]}
+                        onChange={date => handleDateChange(date, index)}
+                        inline
+                        calendarClassName='custom-calendar'
+                        popperPlacement='bottom'
+                      />
+                    </div>
+                  )}
                 </div>
-                <div className='col-span-12 md:col-span-9 p-4'>
-                  <div className='border rounded-lg p-2 flex items-center relative'>
-                    <img
-                      src='/calender-svgrepo-com.svg'
-                      className='w-4 h-4 cursor-pointer'
-                      alt='Calendar Icon'
-                      onClick={() => setOpenPickerIndex(fieldIndex)}
-                      style={{ touchAction: 'manipulation' }}
-                    />
-                    <p className='font-normal text-lg ms-4'>
-                      {selectedDates[fieldIndex]
-                        ? selectedDates[fieldIndex].toLocaleDateString()
-                        : field.entered_date
-                        ? field.entered_date.toLocaleDateString()
-                        : 'N/A'}
-                    </p>
-                    {openPickerIndex === fieldIndex && (
-                      <div className='absolute top-full left-0 z-10'>
-                        <DatePicker
-                          selected={selectedDates[fieldIndex]}
-                          onChange={date => handleDateChange(date, fieldIndex)}
-                          inline
-                          calendarClassName='custom-calendar'
-                          popperPlacement='bottom'
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </React.Fragment>
-            );
-          })
+              </div>
+            </React.Fragment>
+          ))
         )}
       </div>
     );
@@ -237,7 +212,6 @@ const DateFields = ({
       <ToastContainer />
       <div className='container mx-auto p-4'>
         {renderStep(currentStep)}
-
         <div className='flex justify-end'>
           <button
             onClick={handleAddDates}
