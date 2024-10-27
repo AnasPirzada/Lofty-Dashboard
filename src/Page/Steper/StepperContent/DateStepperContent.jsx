@@ -11,13 +11,15 @@ const DateFields = ({
   currentStep,
 }) => {
   const stageNames = ['Pre-Listing', 'Active Listing', 'Under Contract'];
-  const [dateFields, setDateFields] = useState([]);
+
+  const [dateFields, setDateFields] = useState([]); // Static date fields with name and ID
+  const [transactionDates, setTransactionDates] = useState([]); // Dynamic date values for transaction-specific data
   const [selectedDatesByStage, setSelectedDatesByStage] = useState({});
   const [openPickerIndex, setOpenPickerIndex] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Fetch all date fields from API
+  // Fetch all date fields from API (to display date names and structure)
   const fetchAllDateFields = async () => {
     setIsLoading(true);
     setErrorMessage('');
@@ -25,11 +27,10 @@ const DateFields = ({
       const response = await fetch(
         'https://api.tkglisting.com/api/transactions/dates'
       );
-      if (!response.ok) {
-        throw new Error('Failed to fetch dates from API');
-      }
+      if (!response.ok) throw new Error('Failed to fetch dates from API');
+
       const data = await response.json();
-      setDateFields(data);
+      setDateFields(data); // Set static fields with names, etc.
     } catch (error) {
       console.error('Error fetching date fields:', error);
       setErrorMessage('Failed to fetch dates. Please try again later.');
@@ -42,42 +43,29 @@ const DateFields = ({
     fetchAllDateFields();
   }, []);
 
-  // Fetch dates for a specific transaction
+  // Fetch transaction-specific dates for updating entered_date and date_value
   const fetchTransactionDates = async () => {
+    if (!transactionId) return;
     setIsLoading(true);
     setErrorMessage('');
     try {
       const response = await fetch(
         `https://api.tkglisting.com/api/dates/${transactionId}`
       );
-      if (!response.ok) {
-        throw new Error('Transaction not found.');
-      }
+      if (!response.ok) throw new Error('Transaction not found.');
 
       const data = await response.json();
+      console.log(data);
+
       const stageData = data.stages.find(stage => stage.stage_id === stageId);
+      console.log(stageData);
 
       if (stageData && stageData.dates) {
         const transactionDates = stageData.dates.map(item => ({
-          name: item.date_name,
+          date_name: item.date_name,
           entered_date: item.entered_date ? new Date(item.entered_date) : null,
-          date_value: item.date_value ? new Date(item.date_value) : null,
         }));
-
-        const updatedDates = dateFields.map(field => {
-          const match = transactionDates.find(
-            tDate => tDate.name === field.date_name
-          );
-          return {
-            ...field,
-            entered_date: match?.entered_date || match?.date_value || null,
-          };
-        });
-
-        setSelectedDatesByStage(prev => ({
-          ...prev,
-          [stageId]: updatedDates.map(field => field.entered_date || null),
-        }));
+        setTransactionDates(transactionDates); // Only updates transaction-specific dates
       }
     } catch (error) {
       console.error('Error fetching transaction-specific date fields:', error);
@@ -88,9 +76,7 @@ const DateFields = ({
   };
 
   useEffect(() => {
-    if (transactionId) {
-      fetchTransactionDates();
-    }
+    fetchTransactionDates();
   }, [transactionId, stageId]);
 
   const handleDateChange = (date, index) => {
@@ -125,9 +111,7 @@ const DateFields = ({
     try {
       const response = await fetch('https://api.tkglisting.com/api/dates/add', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
 
@@ -136,9 +120,10 @@ const DateFields = ({
           position: 'top-right',
           autoClose: 3000,
         });
-        fetchTransactionDates();
+        await fetchTransactionDates();
+        await fetchAllDateFields();
+        // fetchTransactionDates(); // Refresh to see updated dates
       } else {
-        const errorResponse = await response.json();
         setErrorMessage('Failed to add dates. Please try again later.');
       }
     } catch (error) {
@@ -161,42 +146,47 @@ const DateFields = ({
             <div className='w-8 h-8 border-t-4 border-gray-200 border-solid rounded-full animate-spin'></div>
           </div>
         ) : (
-          dateFields.map((field, index) => (
-            <React.Fragment key={index}>
-              <div className='col-span-12 md:col-span-3 p-4'>
-                <p>{field.date_name}</p>
-              </div>
-              <div className='col-span-12 md:col-span-9 p-4'>
-                <div className='border rounded-lg p-2 flex items-center relative'>
-                  <img
-                    src='/calender-svgrepo-com.svg'
-                    className='w-4 h-4 cursor-pointer'
-                    alt='Calendar Icon'
-                    onClick={() => setOpenPickerIndex(index)}
-                    style={{ touchAction: 'manipulation' }}
-                  />
-                  <p className='font-normal text-lg ms-4'>
-                    {selectedDates[index]
-                      ? selectedDates[index].toLocaleDateString()
-                      : field.entered_date
-                      ? field.entered_date.toLocaleDateString()
-                      : 'N/A'}
-                  </p>
-                  {openPickerIndex === index && (
-                    <div className='absolute top-full left-0 z-10'>
-                      <DatePicker
-                        selected={selectedDates[index]}
-                        onChange={date => handleDateChange(date, index)}
-                        inline
-                        calendarClassName='custom-calendar'
-                        popperPlacement='bottom'
-                      />
-                    </div>
-                  )}
+          dateFields.map((field, index) => {
+            const transactionDate = transactionDates.find(
+              tDate => tDate.date_name === field.date_name
+            );
+            return (
+              <React.Fragment key={index}>
+                <div className='col-span-12 md:col-span-3 p-4'>
+                  <p>{field.date_name}</p>
                 </div>
-              </div>
-            </React.Fragment>
-          ))
+                <div className='col-span-12 md:col-span-9 p-4'>
+                  <div className='border rounded-lg p-2 flex items-center relative'>
+                    <img
+                      src='/calender-svgrepo-com.svg'
+                      className='w-4 h-4 cursor-pointer'
+                      alt='Calendar Icon'
+                      onClick={() => setOpenPickerIndex(index)}
+                      style={{ touchAction: 'manipulation' }}
+                    />
+                    <p className='font-normal text-lg ms-4'>
+                      {selectedDates[index]
+                        ? selectedDates[index].toLocaleDateString()
+                        : transactionDate?.entered_date
+                        ? transactionDate.entered_date.toLocaleDateString()
+                        : 'N/A'}
+                    </p>
+                    {openPickerIndex === index && (
+                      <div className='absolute top-full left-0 z-10'>
+                        <DatePicker
+                          selected={selectedDates[index]}
+                          onChange={date => handleDateChange(date, index)}
+                          inline
+                          calendarClassName='custom-calendar'
+                          popperPlacement='bottom'
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </React.Fragment>
+            );
+          })
         )}
       </div>
     );
