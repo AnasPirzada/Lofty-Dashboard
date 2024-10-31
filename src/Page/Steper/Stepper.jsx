@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import './Stepper.css';
 import AccountingContent from './StepperContent/AccountingContent.jsx';
 import ChecklistsContent from './StepperContent/ChecklistsContent';
@@ -117,13 +117,13 @@ const Stepper = ({
     const new_stage = nextStep + 1; // `nextStep` directly corresponds to the new stage
 
     // Prevent invalid stage updates
-    if (new_stage < 1 || new_stage > 3) {
-      toast.error('Invalid stage. Please check the steps and try again.', {
-        position: 'top-right',
-        autoClose: 3000,
-      });
-      return;
-    }
+    // if (new_stage < 1 || new_stage > 3) {
+    //   toast.error('Invalid stage. Please check the steps and try again.', {
+    //     position: 'top-right',
+    //     autoClose: 3000,
+    //   });
+    //   return;
+    // }
 
     console.log('API Request Data:', {
       transaction_id: transactionKey,
@@ -145,10 +145,10 @@ const Stepper = ({
       const result = await response.json();
       console.log(result);
 
-      if (result.message && result.message.includes('update aborted')) {
-        toast.error(result.message, { position: 'top-right', autoClose: 3000 });
-        return;
-      }
+      // if (result.message && result.message.includes('update aborted')) {
+      //   toast.error(result.message, { position: 'top-right', autoClose: 3000 });
+      //   return;
+      // }
 
       setCurrentStep(new_stage - 1); // Adjust currentStep for zero-based indexing
 
@@ -160,10 +160,10 @@ const Stepper = ({
       setSelectedOption('Dates');
     } catch (error) {
       console.error('Error during API call:', error);
-      toast.error('Failed to update stage. Please try again later.', {
-        position: 'top-right',
-        autoClose: 3000,
-      });
+      // toast.error('Failed to update stage. Please try again later.', {
+      //   position: 'top-right',
+      //   autoClose: 3000,
+      // });
     }
 
     setIsModalOpen(false); // Close modal
