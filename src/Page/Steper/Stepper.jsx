@@ -111,35 +111,12 @@ const Stepper = ({
 
   // Confirm the next step (whether forward or backward)
   const confirmNextStep = async () => {
-    // Log initial values for debugging
-    console.log('Initial values (inside function):', {
-      currentSte,
-      transactionsId,
-      transactionId,
-    });
+    const transactionKey = transactionId || transactionsId;
 
-    // Get valid transaction key
-    const transactionKey = transactionId
-      ? transactionId.toString()
-      : transactionsId.toString();
-    console.log('Transaction Key for URL:', transactionKey);
-
-    // Parse `currentSte` as integer
     const currentStage = parseInt(currentSte, 10);
-    console.log('Current stage:', currentStage);
+    const new_stage = nextStep + 1; // `nextStep` directly corresponds to the new stage
 
-    // Check and set `nextStep` relative to `currentStage`
-    let new_stage;
-    if (nextStep === currentStage) {
-      new_stage = currentStage + 1; // If `nextStep` hasn't changed, move forward
-    } else if (nextStep > currentStage) {
-      new_stage = Math.min(currentStage + 1, 3); // Forward
-    } else {
-      new_stage = Math.max(currentStage - 1, 1); // Backward
-    }
-
-    console.log('New stage:', new_stage);
-
+    // Prevent invalid stage updates
     if (new_stage < 1 || new_stage > 3) {
       toast.error('Invalid stage. Please check the steps and try again.', {
         position: 'top-right',
@@ -155,39 +132,41 @@ const Stepper = ({
     });
 
     try {
-      if (!transactionKey) {
-        throw new Error('Invalid transaction key.');
-      }
-
       const response = await fetch(
         `https://api.tkglisting.com/api/transactions/${transactionKey}/stage`,
         {
           method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            current_stage: currentStage,
-            new_stage: new_stage,
-          }),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ current_stage: currentStage, new_stage }),
         }
       );
+      console.log(response);
 
       const result = await response.json();
-      console.log('API Response:', result);
+      console.log(result);
+
+      if (result.message && result.message.includes('update aborted')) {
+        toast.error(result.message, { position: 'top-right', autoClose: 3000 });
+        return;
+      }
+
+      setCurrentStep(new_stage - 1); // Adjust currentStep for zero-based indexing
+
+      // Update completion status for previous stages
+      const updatedStepsCompletion = stepsCompletion.map(
+        (completed, index) => index < new_stage - 1
+      );
+      setStepsCompletion(updatedStepsCompletion);
+      setSelectedOption('Dates');
     } catch (error) {
       console.error('Error during API call:', error);
+      toast.error('Failed to update stage. Please try again later.', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
     }
 
-    setIsModalOpen(false);
-
-    setCurrentStep(new_stage - 1); // Zero-based step index
-
-    const updatedStepsCompletion = stepsCompletion.map((completed, index) => {
-      return index < new_stage - 1;
-    });
-    setStepsCompletion(updatedStepsCompletion);
-    setSelectedOption('Dates');
+    setIsModalOpen(false); // Close modal
   };
 
   // Cancel moving to the next step

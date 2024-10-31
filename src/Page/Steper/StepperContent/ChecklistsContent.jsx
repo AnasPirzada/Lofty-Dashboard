@@ -4,9 +4,9 @@ const ChecklistsContent = ({ currentStep, transactionId, setTaskCounts }) => {
   const [stages, setStages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingTaskId, setLoadingTaskId] = useState(null);
-  const [activeStage, setActiveStage] = useState(currentStep + 1); // Track the active tab/stage
+  const [activeStage, setActiveStage] = useState(currentStep + 1);
 
-  // Function to fetch checklist data
+  // Fetch checklist data
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -145,7 +145,7 @@ const ChecklistsContent = ({ currentStep, transactionId, setTaskCounts }) => {
             }`}
           >
             {stage.stage_id === 1
-              ? 'Prelisting'
+              ? 'Pre-Listing'
               : stage.stage_id === 2
               ? 'Active Listing'
               : stage.stage_id === 3
@@ -155,10 +155,15 @@ const ChecklistsContent = ({ currentStep, transactionId, setTaskCounts }) => {
         ))}
       </div>
 
-      {/* Render content for the active stage */}
-      {stages.map(
-        stage => stage.stage_id === activeStage && renderStageContent(stage)
-      )}
+      {/* Render content for stages 1, 2, and 3 if activeStage is 3, else render the single active stage */}
+      {stages.map(stage => {
+        const shouldRenderStage =
+          activeStage === 3
+            ? stage.stage_id <= 3 // Render stages 1, 2, and 3 when "Under Contract" is active
+            : stage.stage_id === activeStage; // Render only the active stage otherwise
+
+        return shouldRenderStage ? renderStageContent(stage) : null;
+      })}
     </div>
   );
 };
