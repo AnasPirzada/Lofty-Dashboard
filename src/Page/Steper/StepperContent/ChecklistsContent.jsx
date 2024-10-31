@@ -4,6 +4,7 @@ const ChecklistsContent = ({ currentStep, transactionId, setTaskCounts }) => {
   const [stages, setStages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingTaskId, setLoadingTaskId] = useState(null);
+  const [activeStage, setActiveStage] = useState(currentStep + 1); // Track the active tab/stage
 
   // Function to fetch checklist data
   const fetchData = async () => {
@@ -43,14 +44,8 @@ const ChecklistsContent = ({ currentStep, transactionId, setTaskCounts }) => {
           }),
         }
       );
-      console.log('checklist response', response);
 
       if (response.ok) {
-        console.log(
-          `Task ${taskId} in stage ${stageId} status updated to ${updatedStatus}`
-        );
-        console.log('checklist response', response);
-
         await fetchData();
       } else {
         console.error('Failed to update task status');
@@ -66,30 +61,11 @@ const ChecklistsContent = ({ currentStep, transactionId, setTaskCounts }) => {
     fetchData();
   }, [transactionId]);
 
-  // Helper function to format dates
-  const formatDate = daysOffset => {
-    const currentDate = new Date();
-    currentDate.setDate(currentDate.getDate() + daysOffset);
-    return currentDate.toLocaleDateString();
-  };
+  const sortTasks = tasks => tasks.sort((a, b) => a.task_days - b.task_days);
 
-  // Function to convert task_days into appropriate label
-  const getDateLabel = taskDays => {
-    if (taskDays === 0) return 'Today';
-    if (taskDays === -1) return 'Yesterday';
-    return formatDate(taskDays);
-  };
-
-  // Sort the tasks: Today, Yesterday, then others
-  const sortTasks = tasks => {
-    return tasks.sort((a, b) => a.task_days - b.task_days);
-  };
-
-  // Render tasks for each stage, excluding tasks with "remove": true
+  // Render tasks for each stage
   const renderStageContent = stage => {
-    const visibleTasks = stage.tasks.filter(task => !task.remove);
-    const sortedTasks = sortTasks(visibleTasks); // Sort tasks before rendering
-
+    const sortedTasks = sortTasks(stage.tasks);
     return (
       <div key={stage.stage_id} className={`stage-${stage.stage_id}`}>
         <form>
@@ -127,7 +103,6 @@ const ChecklistsContent = ({ currentStep, transactionId, setTaskCounts }) => {
                     </td>
                     <td className='py-2 px-4 border-b'>{task.task_name}</td>
                     <td className='py-2 px-2 text-nowrap border-b'>
-                      {/* {getDateLabel(task.task_days)} */}
                       {task.task_days} day
                     </td>
                   </tr>
@@ -157,8 +132,32 @@ const ChecklistsContent = ({ currentStep, transactionId, setTaskCounts }) => {
 
   return (
     <div>
+      {/* Render tabs */}
+      <div className='tabs flex space-x-4 mb-4'>
+        {stages.slice(0, currentStep + 1).map((stage, index) => (
+          <button
+            key={stage.stage_id}
+            onClick={() => setActiveStage(stage.stage_id)}
+            className={`py-2 m-3 px-4 border-b-2 ${
+              activeStage === stage.stage_id
+                ? 'border-b-blue-500 text-blue-600'
+                : 'border-b-transparent text-gray-700'
+            }`}
+          >
+            {stage.stage_id === 1
+              ? 'Prelisting'
+              : stage.stage_id === 2
+              ? 'Active Listing'
+              : stage.stage_id === 3
+              ? 'Under Contract'
+              : `No stage`}
+          </button>
+        ))}
+      </div>
+
+      {/* Render content for the active stage */}
       {stages.map(
-        stage => stage.stage_id === currentStep + 1 && renderStageContent(stage)
+        stage => stage.stage_id === activeStage && renderStageContent(stage)
       )}
     </div>
   );
