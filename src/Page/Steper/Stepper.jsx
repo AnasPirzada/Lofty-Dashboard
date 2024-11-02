@@ -17,13 +17,13 @@ const Stepper = ({
   currentSte,
   transactionsId,
 }) => {
-
-   // Set initial value for currentStep based on currentSteps or currentSte
-   const initialCurrentStep = Array.isArray(currentSteps) && currentSteps.length > 0
-   ? currentSteps[0] - 1 // Assuming currentSteps is an array of completed steps (IDs); adjust as needed
-   : currentSte !== undefined && currentSte !== null
-   ? parseInt(currentSte, 10) - 1 // Convert currentSte to zero-based index
-   : 0;
+  // Set initial value for currentStep based on currentSteps or currentSte
+  const initialCurrentStep =
+    Array.isArray(currentSteps) && currentSteps.length > 0
+      ? currentSteps[0] - 1 // Assuming currentSteps is an array of completed steps (IDs); adjust as needed
+      : currentSte !== undefined && currentSte !== null
+      ? parseInt(currentSte, 10) - 1 // Convert currentSte to zero-based index
+      : 0;
   const [steps, setSteps] = useState([]); // Store steps from API
   const [currentStep, setCurrentStep] = useState(initialCurrentStep); // Track current step
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state

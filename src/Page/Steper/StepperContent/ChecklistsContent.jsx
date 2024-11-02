@@ -159,7 +159,7 @@ const ChecklistsContent = ({ currentStep, transactionId, setTaskCounts }) => {
       {stages.map(stage => {
         const shouldRenderStage =
           activeStage === 3
-            ? stage.stage_id <= 3 // Render stages 1, 2, and 3 when "Under Contract" is active
+            ? stage.stage_id === 3 // Render stages 1, 2, and 3 when "Under Contract" is active
             : stage.stage_id === activeStage; // Render only the active stage otherwise
 
         return shouldRenderStage ? renderStageContent(stage) : null;
