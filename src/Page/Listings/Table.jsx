@@ -92,7 +92,7 @@ const TableWithToolbar = () => {
       setTransactions(mappedData);
       setFilteredData(mappedData);
     } catch (error) {
-      toast.error('Failed to fetch transactions');
+      // toast.error('Failed to fetch transactions');
     }
   };
   const mapStage = stage_id => {

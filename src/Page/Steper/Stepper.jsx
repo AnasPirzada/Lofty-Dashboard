@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import './Stepper.css';
-import AccountingContent from './StepperContent/AccountingContent.jsx';
 import ChecklistsContent from './StepperContent/ChecklistsContent';
-import ContactsContent from './StepperContent/ContactsContent';
 import DatesContent from './StepperContent/DateStepperContent.jsx';
-import DocumentsContent from './StepperContent/DocumentsContent';
-import HistoryContent from './StepperContent/HistoryContent';
-import OffersContent from './StepperContent/OffersContent';
 import PropertyContent from './StepperContent/PropertyContent';
 
 const Stepper = ({
@@ -22,8 +17,15 @@ const Stepper = ({
   currentSte,
   transactionsId,
 }) => {
+
+   // Set initial value for currentStep based on currentSteps or currentSte
+   const initialCurrentStep = Array.isArray(currentSteps) && currentSteps.length > 0
+   ? currentSteps[0] - 1 // Assuming currentSteps is an array of completed steps (IDs); adjust as needed
+   : currentSte !== undefined && currentSte !== null
+   ? parseInt(currentSte, 10) - 1 // Convert currentSte to zero-based index
+   : 0;
   const [steps, setSteps] = useState([]); // Store steps from API
-  const [currentStep, setCurrentStep] = useState(0); // Track current step
+  const [currentStep, setCurrentStep] = useState(initialCurrentStep); // Track current step
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const [nextStep, setNextStep] = useState(null); // Track the step to move to after confirmation
   const [stepsCompletion, setStepsCompletion] = useState([]); // Track completion state
@@ -31,67 +33,51 @@ const Stepper = ({
 
   console.log(transactionsId);
 
+  console.log(
+    'i want to send the intial value in currentStep',
+    currentSteps,
+    currentSte
+  );
+
+  console.log('but i am getting intial value as 0 in dates and checklist');
+
   // // Fetch stages from API
   useEffect(() => {
     const fetchStages = async () => {
       try {
-        // Fetch the stages from the transactions API
+        // Fetch stages from API
         const stagesResponse = await fetch(
           'https://api.tkglisting.com/api/transactions/stages'
         );
         const stagesData = await stagesResponse.json();
         console.log('stages', stagesData);
 
-        const fetchedSteps = stagesData.map(stage => stage.stage_name); // Get step names
-        const fetchedStepsid = stagesData.map(stage => stage.stage_id); // Get step names
+        const fetchedSteps = stagesData.map(stage => stage.stage_name);
+        const fetchedStepsIds = stagesData.map(stage => stage.stage_id);
 
-        console.log('fetchedStepsid', fetchedStepsid);
-
-        // Fetch the dates API to compare stages
-        const datesResponse = await fetch(
-          `https://api.tkglisting.com/api/dates/${transactionsId}`
-        );
-        const datesData = await datesResponse.json();
-
-        let dateStages = [];
-        if (datesData.stages && datesData.stages.length > 0) {
-          // Extract stage names or IDs from the dates API response if present
-          dateStages = datesData.stages.map(stage => stage.stage_name);
-        }
-
-        // Determine the steps to show
-        let stepsToDisplay = [];
-        let completionStatus = [];
-
-        if (dateStages.length > 0) {
-          // Use the stages from the `dates` API, marking as active if present
-          stepsToDisplay = fetchedSteps;
-          completionStatus = fetchedSteps.map(step =>
-            dateStages.includes(step)
+        // Determine completion based on available `currentSteps` or `currentSte`
+        let completionStatus;
+        if (Array.isArray(currentSteps) && currentSteps.length > 0) {
+          completionStatus = fetchedStepsIds.map(id =>
+            currentSteps.includes(id)
           );
+        } else if (currentSte !== undefined && currentSte !== null) {
+          const currentStageId = parseInt(currentSte, 10);
+          completionStatus = fetchedStepsIds.map(id => id <= currentStageId);
         } else {
-          // Use all stages fetched from `stages` API if no stage names found in `dates` API, mark as inactive
-          stepsToDisplay = fetchedSteps;
-          completionStatus = fetchedSteps.map(() => false); // Initially mark all as inactive
+          completionStatus = fetchedStepsIds.map(() => false);
         }
 
-        setSteps(stepsToDisplay); // Set steps from API
-        setStepsCompletion(completionStatus); // Set initial completion state
+        setSteps(fetchedSteps);
+        setStepsCompletion(completionStatus);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching stages or dates:', error);
+        console.error('Error fetching stages:', error);
       }
     };
 
     fetchStages();
-  }, [transactionsId]);
-  // Handle progressing to the next step
-  const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setNextStep(currentStep + 1); // Set next step
-      setIsModalOpen(true); // Open confirmation modal
-    }
-  };
+  }, [transactionsId, currentSteps, currentSte]);
 
   // Handle clicking on a specific step
   const handleStepClick = index => {
@@ -101,12 +87,18 @@ const Stepper = ({
     }
   };
 
+  // Handle progressing to the next step
+  const handleNext = () => {
+    const newNextStep = (currentStep + 1) % steps.length; // Wrap to start from the first step
+    setNextStep(newNextStep); // Set the next step
+    setIsModalOpen(true); // Open confirmation modal
+  };
+
   // Handle going to the previous step (with confirmation)
   const handlePrev = () => {
-    if (currentStep > 0) {
-      setNextStep(currentStep - 1); // Set the previous step as the next step
-      setIsModalOpen(true); // Open the confirmation modal
-    }
+    const newPrevStep = (currentStep - 1 + steps.length) % steps.length; // Wrap to go to the last step if on the first step
+    setNextStep(newPrevStep); // Set the previous step as the next step
+    setIsModalOpen(true); // Open the confirmation modal
   };
 
   // Confirm the next step (whether forward or backward)
@@ -115,15 +107,6 @@ const Stepper = ({
 
     const currentStage = parseInt(currentSte, 10);
     const new_stage = nextStep + 1; // `nextStep` directly corresponds to the new stage
-
-    // Prevent invalid stage updates
-    // if (new_stage < 1 || new_stage > 3) {
-    //   toast.error('Invalid stage. Please check the steps and try again.', {
-    //     position: 'top-right',
-    //     autoClose: 3000,
-    //   });
-    //   return;
-    // }
 
     console.log('API Request Data:', {
       transaction_id: transactionKey,
@@ -145,11 +128,6 @@ const Stepper = ({
       const result = await response.json();
       console.log(result);
 
-      // if (result.message && result.message.includes('update aborted')) {
-      //   toast.error(result.message, { position: 'top-right', autoClose: 3000 });
-      //   return;
-      // }
-
       setCurrentStep(new_stage - 1); // Adjust currentStep for zero-based indexing
 
       // Update completion status for previous stages
@@ -160,10 +138,6 @@ const Stepper = ({
       setSelectedOption('Dates');
     } catch (error) {
       console.error('Error during API call:', error);
-      // toast.error('Failed to update stage. Please try again later.', {
-      //   position: 'top-right',
-      //   autoClose: 3000,
-      // });
     }
 
     setIsModalOpen(false); // Close modal
@@ -205,16 +179,7 @@ const Stepper = ({
             transactionId={transactionId || transactionsId}
           />
         );
-      case 'Accounting':
-        return <AccountingContent currentStep={currentStep} />;
-      case 'Contacts':
-        return <ContactsContent currentStep={currentStep} />;
-      case 'Documents':
-        return <DocumentsContent currentStep={currentStep} />;
-      case 'Offers':
-        return <OffersContent currentStep={currentStep} />;
-      case 'History':
-        return <HistoryContent currentStep={currentStep} />;
+
       default:
         return <DatesContent currentStep={currentStep} />;
     }

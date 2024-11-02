@@ -10,13 +10,33 @@ const DateFields = ({
   stageId,
   currentStep,
 }) => {
-  const stageNames = ['Pre-Listing', 'Active Listing', 'Under Contract'];
+  const [stageNames, setStageNames] = useState([]); // Changed to state
   const [dateFields, setDateFields] = useState([]);
   const [transactionDates, setTransactionDates] = useState([]);
   const [selectedDatesByStage, setSelectedDatesByStage] = useState({});
   const [openPickerIndex, setOpenPickerIndex] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  console.log('inside side of date currentStep render content', currentStep);
+
+  // Fetch stages from API
+  useEffect(() => {
+    const fetchStages = async () => {
+      try {
+        const stagesResponse = await fetch(
+          'https://api.tkglisting.com/api/transactions/stages'
+        );
+        const stagesData = await stagesResponse.json();
+
+        const fetchedStageNames = stagesData.map(stage => stage.stage_name);
+        setStageNames(fetchedStageNames); // Set stage names in state
+      } catch (error) {
+        console.error('Error fetching stages:', error);
+      }
+    };
+
+    fetchStages();
+  }, []);
 
   // Fetch static date fields
   const fetchAllDateFields = async () => {
