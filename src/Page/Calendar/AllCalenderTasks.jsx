@@ -1,11 +1,11 @@
-
 import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export const AllCalenderTasks = () => {
+export const AllCalenderTasks = ({ setupdatedLoading }) => {
   const [tasksByStage, setTasksByStage] = useState({});
   const [loadingTaskId, setLoadingTaskId] = useState(null);
+  const [loading, setLoading] = useState();
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -73,7 +73,7 @@ export const AllCalenderTasks = () => {
       if (response.ok) {
         const result = await response.json();
         console.log(result);
-
+        setupdatedLoading(true);
         toast.success('Task status updated successfully!');
         setTasksByStage(prevTasks => {
           const updatedTasks = { ...prevTasks };

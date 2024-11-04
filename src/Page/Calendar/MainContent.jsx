@@ -13,6 +13,7 @@ const MainContent = ({
   myTasksSelectedTab,
   teamTasksSelectedTab,
   activeSection,
+  setupdatedLoading,
 }) => {
   const displayTab =
     activeSection === 'My Tasks' ? myTasksSelectedTab : teamTasksSelectedTab;
@@ -20,7 +21,7 @@ const MainContent = ({
   const renderContent = () => {
     switch (displayTab) {
       case 'All Tasks':
-        return <AllCalenderTasks />;
+        return <AllCalenderTasks setupdatedLoading={setupdatedLoading} />;
       case 'Scheduled':
         return <ScheduledTasks />;
       case 'Today':

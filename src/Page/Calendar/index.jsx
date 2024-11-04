@@ -1,21 +1,30 @@
-// src/pages/index.jsx
 import React, { useEffect, useState } from 'react';
 import NavBar from '../../Components/NavBar';
 import MainContent from './MainContent.jsx';
 import Sidebar from './Sidebar/Sidebar.jsx';
-import { fetchTasks } from './TaskComponents.jsx'; // Correctly import as a named import
+import { fetchTasks } from './TaskComponents.jsx';
 import TopNav from './TopNav.jsx';
-export const index = () => {
+
+const Index = () => {
   const [myTasksSelectedTab, setMyTasksSelectedTab] = useState('All Tasks');
   const [teamTasksSelectedTab, setTeamTasksSelectedTab] = useState('');
   const [activeSection, setActiveSection] = useState('My Tasks');
   const [tasks, setTasks] = useState([]);
+  const [updatedLoading, setupdatedLoading] = useState(false);
+
+  const fetchData = async () => {
+    const data = await fetchTasks();
+    setTasks(data);
+    setupdatedLoading(false); // Reset loading after data fetch
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchTasks(); // Fetch your tasks
-      setTasks(data);
-    };
+    if (updatedLoading) {
+      fetchData();
+    }
+  }, [updatedLoading]); // Re-fetch tasks when updatedLoading is true
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -42,6 +51,7 @@ export const index = () => {
                 myTasksSelectedTab={myTasksSelectedTab}
                 teamTasksSelectedTab={teamTasksSelectedTab}
                 activeSection={activeSection}
+                setupdatedLoading={setupdatedLoading}
               />
             </div>
           </div>
@@ -51,4 +61,4 @@ export const index = () => {
   );
 };
 
-export default index;
+export default Index;
