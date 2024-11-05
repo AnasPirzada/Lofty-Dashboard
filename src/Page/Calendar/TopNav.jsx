@@ -28,11 +28,11 @@ const TopNav = () => {
             </button> */}
           </div>
         </div>
-        <div className='col-span-12 md:col-span-2 md:col-start-11'>
+        {/* <div className='col-span-12 md:col-span-2 md:col-start-11'>
           <div className='bg-gray-700 text-white px-4 py-2 rounded-lg cursor-pointer text-center'>
             + Add | ▼
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* <div className='flex flex-col md:flex-row ms-5 mt-5 border px-5 py-3 bg-white space-y-4 md:space-y-0 md:space-x-4'>
