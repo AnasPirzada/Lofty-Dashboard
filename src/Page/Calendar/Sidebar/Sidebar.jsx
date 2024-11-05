@@ -5,9 +5,9 @@ const sidebarItems = [
     title: 'My Tasks',
     subItems: [
       { name: 'All Tasks', count: 0 },
-      { name: 'Scheduled', count: 0 },
-      { name: 'Today', count: 0 },
-      { name: 'Overdue', count: 0 },
+      { name: 'Scheduled' },
+      { name: 'Today' },
+      { name: 'Overdue' },
       { name: 'Finished', count: 0 },
     ],
   },
@@ -20,6 +20,7 @@ const Sidebar = ({
   setTeamTasksSelectedTab,
   setActiveSection,
   activeSection,
+  finishedCount,
   tasks,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,48 +29,18 @@ const Sidebar = ({
     setIsOpen(!isOpen);
   };
 
-  // Calculate counts for each task category
+  // Calculate counts for 'All Tasks' and 'Finished' only
   const counts = {
     alltasks: tasks.length,
-    Scheduled: tasks.filter(task => task.taskStatus === 'Scheduled').length,
-    today: tasks.filter(task => {
-      const taskDate = new Date(task.enteredDate);
-      return taskDate.toDateString() === new Date().toDateString();
-    }).length,
-    thisWeek: tasks.filter(task => {
-      const taskDate = new Date(task.enteredDate);
-      const now = new Date();
-      const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-      const endOfWeek = new Date(
-        now.setDate(now.getDate() + (6 - now.getDay()))
-      );
-      return taskDate >= startOfWeek && taskDate <= endOfWeek;
-    }).length,
-    thisMonth: tasks.filter(task => {
-      const taskDate = new Date(task.enteredDate);
-      const now = new Date();
-      return (
-        taskDate.getMonth() === now.getMonth() &&
-        taskDate.getFullYear() === now.getFullYear()
-      );
-    }).length,
-    overdue: tasks.filter(task => {
-      const taskDate = new Date(task.enteredDate);
-      return taskDate < new Date() && task.taskStatus !== 'Completed';
-    }).length,
-    finished: tasks.filter(task => task.taskStatus === 'Completed').length,
+    finished: finishedCount,
   };
 
-  // Log counts for debugging
-  console.log('Counts:', counts); // Ensure these are showing correct values
-  console.log('This Week Count:', counts.thisMonth);
-  console.log('This Month Count:', counts.thisWeek);
   return (
     <>
       <button
         className={`md:hidden fixed top-30 left-4 z-30 p-2 bg-gray-700 text-white rounded-lg px-6 focus:outline-none ${
-          isOpen ? 'ms-32 mt-4 top-0' : ' left-0'
-        } `}
+          isOpen ? 'ms-32 mt-4 top-0' : 'left-0'
+        }`}
         onClick={toggleSidebar}
       >
         {isOpen ? '←' : '→'}
@@ -92,9 +63,11 @@ const Sidebar = ({
                     ? myTasksSelectedTab === item.name
                     : teamTasksSelectedTab === item.name;
 
-                // Get the count for the current item
+                // Show count only for 'All Tasks' and 'Finished'
                 const count =
-                  counts[item.name.toLowerCase().replace(/ /g, '')] || 0;
+                  item.name === 'All Tasks' || item.name === 'Finished'
+                    ? counts[item.name.toLowerCase().replace(/ /g, '')] || 0
+                    : null;
 
                 return (
                   <li
@@ -112,13 +85,14 @@ const Sidebar = ({
                     }`}
                   >
                     {item.name}
-                    <span className='text-gray-400'>{count}</span>{' '}
-                    {/* Displaying the count here */}
+                    {count !== null && (
+                      <span className='text-gray-400'>{count}</span>
+                    )}
                   </li>
                 );
               })}
 
-              {/* Display counts for This Week and This Month directly */}
+              {/* Display 'This Week' and 'This Month' without counts */}
               <li
                 className={`cursor-pointer flex justify-between items-center mt-1 px-2 py-1 rounded ${
                   myTasksSelectedTab === 'This Week'
@@ -131,7 +105,6 @@ const Sidebar = ({
                 }}
               >
                 This Week
-                <span className='text-gray-400'>{counts.thisWeek}</span>
               </li>
               <li
                 className={`cursor-pointer flex justify-between items-center mt-1 px-2 py-1 rounded ${
@@ -145,7 +118,6 @@ const Sidebar = ({
                 }}
               >
                 This Month
-                <span className='text-gray-400'>{counts.thisMonth}</span>
               </li>
             </ul>
           </div>
