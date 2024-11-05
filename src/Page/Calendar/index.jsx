@@ -11,32 +11,24 @@ const Index = () => {
   const [activeSection, setActiveSection] = useState('My Tasks');
   const [tasks, setTasks] = useState([]);
   const [updatedLoading, setupdatedLoading] = useState(false);
-  const [finishedCount, setFinishedCount] = useState(0);
+  const [reloadTrigger, setReloadTrigger] = useState(false);
 
   const fetchData = async () => {
     const data = await fetchTasks();
     setTasks(data);
-    setFinishedCount(
-      data.filter(task => task.taskStatus === 'Completed').length
-    );
-    setupdatedLoading(false);
+    setupdatedLoading(false); // Reset loading after data fetch
+    setReloadTrigger(false); // Reset loading after data fetch
   };
 
   useEffect(() => {
-    if (updatedLoading) {
+    if (updatedLoading || reloadTrigger) {
       fetchData();
     }
-  }, [updatedLoading]);
+  }, [updatedLoading, reloadTrigger]); // Re-fetch tasks when updatedLoading is true
 
   useEffect(() => {
     fetchData();
   }, []);
-
-  const handleTaskCompletion = () => {
-    setupdatedLoading(true); // Triggers data refetch, which will update finishedCount
-  };
-
-  console.log('finishedCount in index', finishedCount);
 
   return (
     <div>
@@ -53,7 +45,6 @@ const Index = () => {
                 setActiveSection={setActiveSection}
                 activeSection={activeSection}
                 tasks={tasks}
-                finishedCount={finishedCount}
               />
             </div>
             <div className='col-span-9 lg:col-span-10'>
@@ -62,7 +53,8 @@ const Index = () => {
                 myTasksSelectedTab={myTasksSelectedTab}
                 teamTasksSelectedTab={teamTasksSelectedTab}
                 activeSection={activeSection}
-                setupdatedLoading={handleTaskCompletion}
+                setupdatedLoading={setupdatedLoading}
+                reloadTasks={() => setReloadTrigger(true)}
               />
             </div>
           </div>

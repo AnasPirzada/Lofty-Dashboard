@@ -14,6 +14,7 @@ const MainContent = ({
   teamTasksSelectedTab,
   activeSection,
   setupdatedLoading,
+  reloadTasks,
 }) => {
   const displayTab =
     activeSection === 'My Tasks' ? myTasksSelectedTab : teamTasksSelectedTab;
@@ -23,17 +24,17 @@ const MainContent = ({
       case 'All Tasks':
         return <AllCalenderTasks setupdatedLoading={setupdatedLoading} />;
       case 'Scheduled':
-        return <ScheduledTasks />;
+        return <ScheduledTasks reloadTasks={reloadTasks} />;
       case 'Today':
-        return <TodayTasks />;
+        return <TodayTasks reloadTasks={reloadTasks}/>;
       case 'This Week':
-        return <ThisWeekTasks />;
+        return <ThisWeekTasks reloadTasks={reloadTasks}/>;
       case 'This Month':
-        return <ThisMonthTasks />;
+        return <ThisMonthTasks reloadTasks={reloadTasks}/>;
       case 'Overdue':
-        return <OverdueTasks />;
+        return <OverdueTasks reloadTasks={reloadTasks}/>;
       case 'Finished':
-        return <FinishedTasks />;
+        return <FinishedTasks reloadTasks={reloadTasks}/>;
       default:
         return <h2>Please select a tab from the sidebar</h2>;
     }
