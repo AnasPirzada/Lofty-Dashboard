@@ -1,14 +1,12 @@
 // src/components/MainContent.jsx
 import React from 'react';
 import AllCalenderTasks from './AllCalenderTasks.jsx';
-import {
-  FinishedTasks,
-  OverdueTasks,
-  ScheduledTasks,
-  ThisMonthTasks,
-  ThisWeekTasks,
-  TodayTasks,
-} from './TaskComponents';
+import OverdueTask from './OverdueTasks.jsx';
+import ScheduledTask from './ScheduledTasks.jsx';
+import { FinishedTasks } from './TaskComponents';
+import ThisMonthTask from './ThisMonthTasks.jsx';
+import ThisWeekTask from './ThisWeekTasks.jsx';
+import TodayTasks from './TodayTasks.jsx';
 const MainContent = ({
   myTasksSelectedTab,
   teamTasksSelectedTab,
@@ -24,17 +22,17 @@ const MainContent = ({
       case 'All Tasks':
         return <AllCalenderTasks setupdatedLoading={setupdatedLoading} />;
       case 'Scheduled':
-        return <ScheduledTasks reloadTasks={reloadTasks} />;
+        return <ScheduledTask />;
       case 'Today':
-        return <TodayTasks reloadTasks={reloadTasks}/>;
+        return <TodayTasks setupdatedLoading={setupdatedLoading} />;
       case 'This Week':
-        return <ThisWeekTasks reloadTasks={reloadTasks}/>;
+        return <ThisWeekTask setupdatedLoading={setupdatedLoading} />;
       case 'This Month':
-        return <ThisMonthTasks reloadTasks={reloadTasks}/>;
+        return <ThisMonthTask setupdatedLoading={setupdatedLoading} />;
       case 'Overdue':
-        return <OverdueTasks reloadTasks={reloadTasks}/>;
+        return <OverdueTask setupdatedLoading={setupdatedLoading} />;
       case 'Finished':
-        return <FinishedTasks reloadTasks={reloadTasks}/>;
+        return <FinishedTasks reloadTasks={reloadTasks} />;
       default:
         return <h2>Please select a tab from the sidebar</h2>;
     }
